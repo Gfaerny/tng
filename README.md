@@ -22,11 +22,12 @@ A CLI app for Linux to create a file and write custom comments for multiple prog
 
 1. Download the latest release from the GitHub repository
 2. Extract the downloaded file to a directory on your system
-3. Add the extracted directory to your system's `PATH` environment variable
-4. Make the `clicomment.sh` script executable with the command `chmod +x clicomment.sh`
+3. Run the TngInstalltion file and config it
+   
+./TngInstalltion
 
 ## Usage
 
-Run the `clicomment.sh` script with the `-l` flag followed by the desired programming language. For example, to create a new Python file with comments, run the following command:
+use  tng like 
 ```bash
-./clicomment.sh -l python -o myfile.py
+tng reza.cpp
