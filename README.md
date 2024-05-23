@@ -17,15 +17,15 @@ A CLI app for Linux to create a file and write custom comments for multiple prog
   - Swift
   - PHP
   - Rust
+  - Bash
 
 ## Installation
-
 1. Download the latest release from the GitHub repository
 2. Extract the downloaded file to a directory on your system
-3. Run the TngInstalltion file and config it
-   
-./TngInstalltion
-
+3. Run the TngInstaller file
+  ```bash  
+./TngInstaller
+```
 ## Usage
 
 use  tng like 
