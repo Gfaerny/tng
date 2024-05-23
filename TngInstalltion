@@ -27,5 +27,5 @@ echo "$editor" >"/etc/tng/e.zngdm"
 echo "$name" >"/etc/tng/n.zngdm"
 echo -e "\033[91m [the information copied...] \033[0m"
 mv tng /bin/
-
+#the tng file goes to /bin/ for action like unix command
 echo  "TNG Is Ready TO Use type = tng file.example"‌
