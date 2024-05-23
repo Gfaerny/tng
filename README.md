@@ -28,6 +28,14 @@ A CLI app for Linux to create a file and write custom comments for multiple prog
 ```
 ## Usage
 
-use  tng like 
+use tng  in su(Root) user like command 
 ```bash
 tng reza.cpp
+```
+## Output of example
+In TngInstaller You can provide Your Editor and  Name 
+```bash
+///editor = Nano
+///Created By Gfaerny
+///2024.05.23 13:09
+```
