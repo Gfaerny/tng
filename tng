@@ -12,8 +12,10 @@ elif [[ $1 == *.cc || $1 == *.cpp || $1 == *.cxx || $1 == *.c || $1 == *.cs || $
     echo "///editor = ${editor}" >> "$filename"
     echo "///Created By ${name}" >> "$filename"
     echo "///$(date +"%Y.%m.%d %H:%M")" >> "$filename"
-else
-    echo "Other file type"
+else [[ $1 == *.lua ||‌ $1 == *.luac ||‌ $1 == *.moon ||‌ $1 == *.wlua ||‌ $1 == *.nse ]]
+    echo "--editor = ${editor}" >> "$filename"
+    echo "--Created By ${name}" >> "$filename"
+    echo "--$(date +"%Y.%m.%d %H:%M")" >> "$filename"
 fi
 
 exit 0
