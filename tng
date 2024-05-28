@@ -3,7 +3,7 @@ filename=$1
 editor="$(< /etc/tng/e.zngdm)"
 name="$(< /etc/tng/n.zngdm)"
 touch "$filename"
-if [[ $1 == *.py || $1 == *.pyw || $1 == *.pyc || $1 == *.pyd || $1 == *.pyo || $1 == *.rb || $1 == *.rbw || $1 == *.rbx || $1 == *.rbo || $1 == *.gy || $1 == *.sh ]]; then
+if [[ $1 == *.py || $1 == *.pyw || $1 == *.pyc || $1 == *.pyd || $1 == *.pyo || $1 == *.rb || $1 == *.rbw || $1 == *.rbx || $1 == *.rbo || $1 == *.gy ]]; then
     echo "#editor = ${editor}" >> "$filename"
     echo "#Created By ${name}" >> "$filename"
     echo "#$(date +"%Y.%m.%d %H:%M")" >> "$filename"
@@ -16,6 +16,11 @@ else [[ $1 == *.lua ||‌ $1 == *.luac ||‌ $1 == *.moon ||‌ $1 == *.wlua ||�
     echo "--editor = ${editor}" >> "$filename"
     echo "--Created By ${name}" >> "$filename"
     echo "--$(date +"%Y.%m.%d %H:%M")" >> "$filename"
+else [[ $1 == *.sh ]]
+    echo "#!/bin/bash " >> "$filename"
+    echo "#editor = ${editor}" >> "$filename"
+    echo "#Created By ${name}" >> "$filename"
+    echo "#$(date +"%Y.%m.%d %H:%M")" >> "$filename"
 fi
 
 exit 0
