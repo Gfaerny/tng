@@ -28,4 +28,5 @@ ALL LANG THAT TNG PROVIDE
 11 /Rust: .rs, .rlib, .toml
 12 /Swift: .swift, .swiftmodule, .swiftinterface, .swiftdoc
 13 /Lualang:.lua, .luac, .moon, .wlua, .nse  
+14 /Csound :.csd
 And Bash :>
