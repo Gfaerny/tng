@@ -21,6 +21,19 @@ else [[ $1 == *.sh ]]
     echo "#editor = ${editor}" >> "$filename"
     echo "#Created By ${name}" >> "$filename"
     echo "#$(date +"%Y.%m.%d %H:%M")" >> "$filename"
+#for csound lang
+else [[ $1 == *csd]]
+    echo ";editor = ${editor}" >> "$filename"
+    echo ";Created By ${name}" >> "$filename"
+    echo ";$(date +"%Y.%m.%d %H:%M")" >> "$filename"
+    echo "<CsoundSynthesizer>" >> "$filename"
+    echo "<CsOptions>" >> "$filename"
+    echo "</CsOptions>" >> "$filename"
+    echo "<CsInstruments>" >> "$filename"
+    echo "</CsInstruments>" >> "$filename"
+    echo "<CsScore>" >>‌ "$filename"
+    echo "</CsScore>" >>‌ "$filename"
+    echo "</CsoundSynthesizer>" >> "$filename"
 fi
 
 exit 0
