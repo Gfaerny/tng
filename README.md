@@ -18,11 +18,16 @@ A CLI app for Linux to create a file and write custom comments for multiple prog
   - PHP
   - Rust
   - Bash
-
+  ...
 ## Installation
 1. Download the latest release from the GitHub repository
 2. Extract the downloaded file to a directory on your system
-3. Run the TngInstaller file
+3. Chmod tng file and TngInstaller file if you just want to install the tng
+   ```bash
+   chmod +x TngInstaller
+   chmod +x tng
+   ```
+5. Run the TngInstaller file
   ```bash  
 ./TngInstaller
 ```
