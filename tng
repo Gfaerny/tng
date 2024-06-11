@@ -16,7 +16,7 @@ elif [[ $1 == *.lua || $1 == *.luac || $1 == *.moon || $1 == *.wlua || $1 == *.n
     echo "--Created By ${name}" >> "$filename"
     echo "--$(date +"%Y.%m.%d %H:%M")" >> "$filename"
 elif [[ $1 == *.sh ]]; then
-    echo "#!/bin/bash " >> "$filename"
+    echo "#!/bin/bash" >> "$filename"
     echo "#editor = ${editor}" >> "$filename"
     echo "#Created By ${name}" >> "$filename"
     echo "#$(date +"%Y.%m.%d %H:%M")" >> "$filename"
