@@ -13,9 +13,6 @@ echo
 echo " OK!!! Yor Editor Is ${editor} Now Enter Your Name:‌"
 read -p "Name: " name
 echo " ${name} Done"
-echo " In The End...If You Want To Make File with incode.py,.cpp,.c,.go,.java,.js,.cs and..."
-echo -e "\033[91m [Press Enter To Continue...] \033[0m"
-read -n1
 echo "Your Comment Gonna Write With Your special File Extension"
 cat srcc.txt
 echo -e "\033[91m [If You Understand Press Enter To Continue...] \033[0m"
