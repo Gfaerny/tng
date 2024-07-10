@@ -1,3 +1,0 @@
-rm /etc/tng/e.zngdm
-rm /etc/tng/n.zngdm
-./TngInsalltion
