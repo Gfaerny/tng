@@ -1,6 +1,6 @@
 # Cli Comment
 
-A CLI app for Linux to create a file and write custom comments for multiple programming languages.
+A CLI app for Linux( and gonna come for windows) to create a file and write custom comments for multiple programming languages.
 
 ## Features
 
