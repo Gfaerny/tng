@@ -44,3 +44,6 @@ In TngInstaller You can provide Your Editor and  Name
 ///Created By Gfaerny
 ///2024.05.23 13:09
 ```
+
+## Windows
+the windwos is now experimental ... sorry
