@@ -2,6 +2,13 @@ param(
     [string]$filename
 )
 mkdir C:\Users\tng\
+if (!(Test-Path -Path C:\Users\tng\e.zngdm)) {
+    New-Item -Path C:\Users\tng\e.zngdm
+}
+if (!(Test-Path -Path C:\Users\tng\n.zngdm)) {
+    New-Item -Path C:\Users\tng\n.zngdm
+}
+
 $editor = Get-Content -Path "C:\Users\tng\e.zngdm"
 $name = Get-Content -Path "C:\Users\tng\n.zngdm"
 
