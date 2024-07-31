@@ -1,9 +1,9 @@
 param(
     [string]$filename
 )
-
-$editor = Get-Content -Path "C:\Users\pc10\e.zngdm"
-$name = Get-Content -Path "C:\Users\pc10\n.zngdm"
+mkdir C:\Users\tng\
+$editor = Get-Content -Path "C:\Users\tng\e.zngdm"
+$name = Get-Content -Path "C:\Users\tng\n.zngdm"
 
 New-Item -Path $filename -ItemType File
 
