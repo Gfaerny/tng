@@ -2,12 +2,14 @@ param(
     [string]$filename
 )
 
-mkdir C:\Users\tng\
-if (!(Test-Path -Path C:\Users\tng\e.zngdm)) {
-    New-Item -Path C:\Users\tng\e.zngdm
-}
-if (!(Test-Path -Path C:\Users\tng\n.zngdm)) {
-    New-Item -Path C:\Users\tng\n.zngdm
+$directoryPath = "C:\Users\tng\e.zngdm"
+
+if (!(Test-Path -Path $directoryPath)) {
+    New-Item -Path $directoryPath -ItemType Directory
+    New-Item -Path $directoryPath -Name "n.zngdm" -ItemType File
+    Write-Host "This is the first time tng rus in this shell"
+} elseif (Test-Path -Path $directoryPath) {
+    Write-Host "This is not the first run"
 }
 
 $editor = Get-Content -Path "C:\Users\tng\e.zngdm"
