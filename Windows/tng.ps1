@@ -8,6 +8,13 @@ if (!(Test-Path -Path $directoryPath)) {
     New-Item -Path $directoryPath -ItemType Directory
     New-Item -Path $directoryPath -Name "n.zngdm" -ItemType File
     Write-Host "This is the first time tng rus in this shell"
+    Write-Host "the tng command write comment you name and editor with your custom ( and time )"
+    Write-Host "Example"
+    Write-Host "/// You name"
+    Write-Host "/// Your Editor"
+    Write-Host "/// the time"
+    Write-Host "So what name  you Want to use:"
+    Write-Host ""
 } elseif (Test-Path -Path $directoryPath) {
     Write-Host "This is not the first run"
 }
