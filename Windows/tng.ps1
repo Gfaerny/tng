@@ -15,6 +15,7 @@ if (!(Test-Path -Path $directoryPath)) {
     Write-Host "/// the time"
     Write-Host "So what name  you Want to use:"
     Write-Host ""
+    #then we echo the name and echo the editor to our form ( we echo it in our file e.zngdm and n.zngdm
 } elseif (Test-Path -Path $directoryPath) {
     Write-Host "This is not the first run"
 }
