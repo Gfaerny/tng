@@ -40,9 +40,9 @@ tng reza.cpp
 ## Output of example
 In TngInstaller You can provide Your Editor and  Name 
 ```bash
-///editor = Nano
-///Created By Gfaerny
-///2024.05.23 13:09
+/// editor = Nano
+/// Created By Gfaerny
+/// 2024.05.23 13:09
 ```
 
 ## Windows
