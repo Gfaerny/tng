@@ -25,4 +25,4 @@ echo "$name" >"/etc/tng/n.zngdm"
 echo -e "\033[91m [the information copied...] \033[0m"
 mv tng /bin/
 
-echo  "TNG Is Ready TO Use type = tng file.example"‌
+echo  "TNG Is Ready TO Use type = tng file.extention"‌
