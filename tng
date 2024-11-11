@@ -1,16 +1,17 @@
 #!/bin/bash
-if ["$1" == "-c"]
-    then
-    # this part gonna be script for runing some gui to provide 
-    # the custom test for the txt and the how much file that creat in secend 
-    # arg like -/
-    # tng -c 10
+#    if ["$1" == "-c"]
+#   then
+#    # this part gonna be script for runing some gui to provide 
+#    # the custom test for the txt and the how much file that creat in secend 
+#    # arg like -/
+#    # tng -c 10
 
 
 
 
-    exit 0
-fi
+#    exit 0
+#fi
+
 filename=$1
 editor="$(< /etc/tng/e.zngdm)"
 name="$(< /etc/tng/n.zngdm)"
