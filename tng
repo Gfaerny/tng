@@ -12,6 +12,8 @@
 #    exit 0
 #fi
 
+# we can use sed -i '1i text massage ' filename for more speed 
+
 filename=$1
 editor="$(< /etc/tng/e.zngdm)"
 name="$(< /etc/tng/n.zngdm)"
