@@ -1,6 +1,0 @@
-{
-    "version": "1.0",
-    "url": "https://github.com/Gfaerny/tng/archive/master.zip",
-    "extract_dir": "tng-main",
-    "bin": "tng.ps1"
-}
