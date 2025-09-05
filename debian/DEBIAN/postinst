@@ -1,0 +1,8 @@
+#!/bin/bash/
+
+if [ ! -d "$USER_HOME/.conf/tng/"]; then
+	mkdir -p "$USER_HOME/.conf/tng/" 
+	chmod 755 "$USER_HOME/.conf/tng" 
+	touch -a "$USER_HOME/.conf/tng/tng.config"
+	echo "tng config file set and installation is done"
+fi

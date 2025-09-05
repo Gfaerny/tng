@@ -1,0 +1,8 @@
+Package:tng
+version:0.1
+Section:utils
+Priority: optional
+Architecture: amd64
+Depends: nano
+Maintainer: gfaerny <gfaerny@gmail.com>
+Description: configable cli app for making file with custom comment 
