@@ -2,3 +2,4 @@ tng
 *m
 *.o
 /src/*.o
+*.txt
