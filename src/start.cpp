@@ -1,17 +1,19 @@
   #include <fstream>
   #include <cstdio>
 
+
+  
   bool Tng_S()
 {
   std::ofstream Config_file;
-  Config_file.open("ciii");
-  if(!Config_file.is_open())
+  Config_file.open("/home/gfaerny/.config/tng/tng.conf");
+  if(Config_file.is_open())
   {
-   return false; 
+    return false;
   }
   else
   {
-    return true;
+    return false;
   }
-  
+  return true;
 };

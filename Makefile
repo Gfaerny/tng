@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -I/home/gfaerny/gf/pro/tng/include -Wall -std=c++17
+CXXFLAGS = -I/home/gfaerny/gf/pro/tng/include -Wall -std=c++17 -static -O2 -s
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 TARGET = tng
