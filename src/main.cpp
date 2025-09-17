@@ -1,37 +1,60 @@
+    #include <cstdint>
     #include <cstdio>
     #include <fstream>
     #include <iostream>
-    #include <start.h>
+    #include <MassagePrint.h>
+    #include <string.h>
+    #include <stack>
 
-    /// why god
-    #define TNG_NOARG_ERROR {printf ("tng: Error , you get not argument.add flag --help for more info \n");}
-    #define TNG_HELPARG {printf ("tng\nUsage : tng [FILENAME]... [OPTION]...\nConfigable crossplatform cli filemaker\n   -c, --nano config file  \n   -h, --help       display this help and exit\n");}
+std::string arg1 = "";
+    
+bool TNG_CONFIG = false;
+bool TNG_LICENSE = false;
 
+std::stack<char *> TNG_ARG_STACK = {};
 
-    std::string arg1 = "";
-    int main(int argc,char* argv[])
+int main(int argc,char* argv[])
 
-{
+{   
+
     if(argv[1] == nullptr)
     {
-        TNG_NOARG_ERROR;
+        TNG_MSG_NOARG_ERROR();
         return 1;
-    } 
-    
+    }    
     else
     {
         arg1 = argv[1];
     }
+
+    for(int8_t i  = 0 ;i < argc ; i++)
+    {
+///     this is for test    std::cout << i << " " << argv[i] << "\n";            
+
+        if (strcmp (argv[i] ,"-c") || strcmp(argv[i] , "--c") || strcmp (argv[i], "-C"))
+        {
+            TNG_CONFIG == true;
+        }
+        else if(strcmp(argv[i] , "-l") || strcmp(argv[i] , "--l") )
+        {
+            TNG_LICENSE = true;
+        }
+    
+///     here we store non-option argument's 
+        TNG_ARG_STACK.push(argv[i]);
+    }
+
     
     if (arg1 == "--help" || arg1 == "-h")
     {
-        TNG_HELPARG;
+        TNG_MSG_HELPARG();
         return 0;
     }
     else
     {
-        std::string FileName = argv[1];
+        std::string FileName = argv[argc];
         std::ofstream file;
+        
         file.open(FileName);
     
         std::cout << FileName << std::endl;

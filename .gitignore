@@ -3,3 +3,4 @@ tng
 *.o
 /src/*.o
 *.txt
+/.cache/
