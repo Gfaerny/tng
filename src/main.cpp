@@ -1,3 +1,5 @@
+
+/// LIB
     #include <cstdint>
     #include <cstdio>
     #include <fstream>
@@ -5,17 +7,36 @@
     #include <MassagePrint.h>
     #include <string.h>
     #include <stack>
+/// LIB
 
-std::string arg1 = "";
+/// GLOBAL's
+    std::string arg1 = "";
     
-bool TNG_CONFIG = false;
-bool TNG_LICENSE = false;
+    bool TNG_CONFIG = false;
+    bool TNG_LICENSE = false;
 
-std::stack<char *> TNG_ARG_STACK = {};
+
+    std::stack<char *> TNG_ARG_STACK = {};
+/// GLOBAL's
+
+
+
+
+void print_usage()
+{
+	  fprintf(stderr,
+		"usage: tng [OPTIONS] [FILENAMES]\n"
+		"\n"
+		"options:\n"
+		"  -h, --help                 show this help message\n"
+		"  -c <configname> <file> , --config  <configname> <file>    use specified config for begining file comment\n"
+    "  -l <licensename> <file> , --license <licensename> <file>  use specified license for  "
+    " -n <file> <>"
+		);
+}
 
 int main(int argc,char* argv[])
-
-{   
+{
 
     if(argv[1] == nullptr)
     {
@@ -29,7 +50,7 @@ int main(int argc,char* argv[])
 
     for(int8_t i  = 0 ;i < argc ; i++)
     {
-///     this is for test    std::cout << i << " " << argv[i] << "\n";            
+///      ignore this line it's for test this is for test    std::cout << i << " " << argv[i] << "\n";            
 
         if (strcmp (argv[i] ,"-c") || strcmp(argv[i] , "--c") || strcmp (argv[i], "-C"))
         {
@@ -39,14 +60,19 @@ int main(int argc,char* argv[])
         {
             TNG_LICENSE = true;
         }
-    
 ///     here we store non-option argument's 
         TNG_ARG_STACK.push(argv[i]);
     }
-
-    
+   
     if (arg1 == "--help" || arg1 == "-h")
     {
+        if(argc > 2 == 1)
+        {
+            fprintf(stderr ,
+                    
+                    "tng [Warrning] :You have to use --help option alone for tng result"
+                    );
+        }
         TNG_MSG_HELPARG();
         return 0;
     }
@@ -54,7 +80,6 @@ int main(int argc,char* argv[])
     {
         std::string FileName = argv[argc];
         std::ofstream file;
-        
         file.open(FileName);
     
         std::cout << FileName << std::endl;
