@@ -4,3 +4,5 @@ tng
 /src/*.o
 *.txt
 /.cache/
+/build/
+compile_commands.json

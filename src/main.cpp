@@ -1,25 +1,20 @@
-
-/// LIB
     #include <cstdint>
     #include <cstdio>
     #include <fstream>
-    #include <iostream>
-    #include <MassagePrint.h>
+    #include <string>
     #include <string.h>
-    #include <stack>
-/// LIB
+    #include <vector>
 
-/// GLOBAL's
     std::string arg1 = "";
-    
+
     bool TNG_CONFIG = false;
     bool TNG_LICENSE = false;
 
 
-    std::stack<char *> TNG_ARG_STACK = {};
-/// GLOBAL's
+    std::vector<std::string> TNG_ARG_STACK = {};
 
-
+    char* Config_Name;
+    char* License_Name;
 
 
 void print_usage()
@@ -30,67 +25,83 @@ void print_usage()
 		"options:\n"
 		"  -h, --help                 show this help message\n"
 		"  -c <configname> <file> , --config  <configname> <file>    use specified config for begining file comment\n"
-    "  -l <licensename> <file> , --license <licensename> <file>  use specified license for  "
-    " -n <file> <>"
+    "  -l <licensename> <file> , --license <licensename> <file>  use specified license for \n"
 		);
 }
 
+
+
 int main(int argc,char* argv[])
 {
-
-    if(argv[1] == nullptr)
+    if(argv[1]  == nullptr)
     {
-        TNG_MSG_NOARG_ERROR();
+        printf("hf\n");
         return 1;
-    }    
-    else
-    {
-        arg1 = argv[1];
     }
+    
 
-    for(int8_t i  = 0 ;i < argc ; i++)
+    for(int8_t i  = 0 ;i < argc - 1 ; i++)
     {
-///      ignore this line it's for test this is for test    std::cout << i << " " << argv[i] << "\n";            
-
-        if (strcmp (argv[i] ,"-c") || strcmp(argv[i] , "--c") || strcmp (argv[i], "-C"))
+        std::fprintf( stderr ,"%d\n" , i );
+    
+        if (strcmp (argv[i] ,"-c") || strcmp(argv[i] , "--config"))
         {
-            TNG_CONFIG == true;
+            TNG_CONFIG = true;
+            printf("hi");
         }
-        else if(strcmp(argv[i] , "-l") || strcmp(argv[i] , "--l") )
+            
+        else if (strcmp(argv[i] , "-l") || strcmp(argv[i] , "--license") )
         {
+            printf("hi");
             TNG_LICENSE = true;
         }
-///     here we store non-option argument's 
-        TNG_ARG_STACK.push(argv[i]);
+///     here we store non-option argument's
+        TNG_ARG_STACK.push_back(argv[i]);
+
     }
    
-    if (arg1 == "--help" || arg1 == "-h")
-    {
-        if(argc > 2 == 1)
+        if (arg1 == "--help" || arg1 == "-h")
         {
-            fprintf(stderr ,
-                    
-                    "tng [Warrning] :You have to use --help option alone for tng result"
+            if(argc > 2 == 1)
+            {
+                fprintf
+                    (
+                        stderr ,
+                        "tng Warrning :You have to use --help option alone for tng result"
                     );
+                
+            }
+
+            print_usage();
+            return 0;
         }
-        TNG_MSG_HELPARG();
+
+        for(int8_t i = 0; i < TNG_ARG_STACK.size() ; i++)
+        {
+            if(TNG_CONFIG || TNG_LICENSE)
+            {
+                printf("it true");
+                
+            }
+
+        }
+        
+        
+
+            std::string FileName = argv[argc];
+            std::ofstream file;
+            file.open(FileName);
+
+            if (!file.is_open())
+            {
+    ///            std::cout << "tng: Error while making file. $s check your permission" << std::endl;
+    
+                return 1;
+            }
+
+            file.close();
+
         return 0;
     }
-    else
-    {
-        std::string FileName = argv[argc];
-        std::ofstream file;
-        file.open(FileName);
+
     
-        std::cout << FileName << std::endl;
-        if (!file.is_open())
-        {
-            std::cout << "tng: Error for while making file.check your permission" << std::endl;
-            return 1;
-        }
-        std::cout << "tng: File named : "<< arg1 <<" just got created." << std::endl;
-        file.close();
-    }
-    
-    return 0;
-}
