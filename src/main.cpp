@@ -1,16 +1,12 @@
     #include <cstdint>
     #include <cstdio>
-    #include <fstream>
+    #include <iomanip>
     #include <string>
     #include <string.h>
     #include <vector>
+    #include <iostream>
 
-    std::string arg1 = "";
-
-    bool TNG_CONFIG = false;
-    bool TNG_LICENSE = false;
-
-
+    
     std::vector<std::string> TNG_ARG_STACK = {};
 
     char* Config_Name;
@@ -33,26 +29,29 @@ void print_usage()
 
 int main(int argc,char* argv[])
 {
+
+    bool TNG_LICENSE = false , TNG_CONFIG = false;
+
     if(argv[1]  == nullptr)
     {
-        printf("hf\n");
+        printf("tng error : few argument's\n");
+        print_usage();
         return 1;
     }
     
 
-    for(int8_t i  = 0 ;i < argc - 1 ; i++)
+    for(int8_t i  = 0 ;i < argc ; i++)
     {
-        std::fprintf( stderr ,"%d\n" , i );
-    
+        fprintf( stderr ,"%d\n" , i);
+        fprintf(stderr ,"%s\n" , argv[i]);
+        std::quoted(argv[i]);
         if (strcmp (argv[i] ,"-c") || strcmp(argv[i] , "--config"))
         {
-            TNG_CONFIG = true;
-            printf("hi");
+            TNG_CONFIG = true;        
         }
             
-        else if (strcmp(argv[i] , "-l") || strcmp(argv[i] , "--license") )
+        if (strcmp(argv[i] , "-l") || strcmp(argv[i] , "--license") )
         {
-            printf("hi");
             TNG_LICENSE = true;
         }
 ///     here we store non-option argument's
@@ -60,9 +59,9 @@ int main(int argc,char* argv[])
 
     }
    
-        if (arg1 == "--help" || arg1 == "-h")
+        if (strcmp(argv[1], "-h") || strcmp(argv[1], "--help"))
         {
-            if(argc > 2 == 1)
+            if(argc > 2)
             {
                 fprintf
                     (
@@ -73,19 +72,18 @@ int main(int argc,char* argv[])
             }
 
             print_usage();
-            return 0;
-        }
-
-        for(int8_t i = 0; i < TNG_ARG_STACK.size() ; i++)
-        {
-            if(TNG_CONFIG || TNG_LICENSE)
-            {
-                printf("it true");
-                
-            }
-
-        }
         
+        }
+
+            
+        std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
+        printf("it true\nso it work now");
+                
+            
+                
+
+        
+        TNG_MAKE_FILE(TNG_ARG_STACK , TNG_CONFIG ,TNG_LICENSE);        
         
 
             std::string FileName = argv[argc];
@@ -94,12 +92,6 @@ int main(int argc,char* argv[])
 
             if (!file.is_open())
             {
-    ///            std::cout << "tng: Error while making file. $s check your permission" << std::endl;
-    
-                return 1;
-            }
-
-            file.close();
 
         return 0;
     }
