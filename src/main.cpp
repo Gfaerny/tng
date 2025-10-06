@@ -1,4 +1,5 @@
-    #include <cstdint>
+    #include "makefile.h"
+#include <cstdint>
     #include <cstdio>
     #include <iomanip>
     #include <string>
@@ -50,13 +51,15 @@ int main(int argc,char* argv[])
             TNG_CONFIG = true;        
         }
             
-        if (strcmp(argv[i] , "-l") || strcmp(argv[i] , "--license") )
+        else if (strcmp(argv[i] , "-l") || strcmp(argv[i] , "--license") )
         {
             TNG_LICENSE = true;
         }
 ///     here we store non-option argument's
-        TNG_ARG_STACK.push_back(argv[i]);
-
+        else
+        {
+            TNG_ARG_STACK.push_back(argv[i]);
+        }
     }
    
         if (strcmp(argv[1], "-h") || strcmp(argv[1], "--help"))
@@ -80,9 +83,10 @@ int main(int argc,char* argv[])
         printf("it true\nso it work now");
                 
             
+        TNG_MAKE_FILE(TNG_ARG_STACK,  TNG_CONFIG, TNG_LICENSE);
                 
 
-        
+        /*
         TNG_MAKE_FILE(TNG_ARG_STACK , TNG_CONFIG ,TNG_LICENSE);        
         
 
@@ -92,7 +96,7 @@ int main(int argc,char* argv[])
 
             if (!file.is_open())
             {
-
+*/
         return 0;
     }
 

@@ -1,7 +1,0 @@
-compiler(g++)
-cflags(-static)
-source_dir(src)
-output_dir(build)
-include_dir(include)
-
-build(main)
