@@ -1,13 +1,13 @@
     #include "makefile.h"
-#include <cstdint>
+    #include <cstdint>
     #include <cstdio>
     #include <iomanip>
     #include <string>
     #include <string.h>
     #include <vector>
+    #include <print>
     #include <iostream>
 
-    
     std::vector<std::string> TNG_ARG_STACK = {};
 
     char* Config_Name;
@@ -30,65 +30,64 @@ void print_usage()
 
 int main(int argc,char* argv[])
 {
-
     bool TNG_LICENSE = false , TNG_CONFIG = false;
 
     if(argv[1]  == nullptr)
     {
+            std::cout << "what fuck 1";
         printf("tng error : few argument's\n");
         print_usage();
         return 1;
     }
-    
 
-    for(int8_t i  = 0 ;i < argc ; i++)
+
+    for(int8_t i  = 1 ;i < argc ; i++)
     {
-        fprintf( stderr ,"%d\n" , i);
-        fprintf(stderr ,"%s\n" , argv[i]);
-        std::quoted(argv[i]);
-        if (strcmp (argv[i] ,"-c") || strcmp(argv[i] , "--config"))
+        std::cout << "hi this is argv[i]" << argv[i] << "\n" <<std::endl;
+        if (std::string(argv[i]) == "-c" || std::string(argv[i]) == "--config")
         {
-            TNG_CONFIG = true;        
+            TNG_CONFIG = true;
         }
-            
-        else if (strcmp(argv[i] , "-l") || strcmp(argv[i] , "--license") )
+        else if (std::string(argv[i]) == "-l" || std::string (argv[i]) == "--license")
         {
             TNG_LICENSE = true;
         }
-///     here we store non-option argument's
+        else if(std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help")
+        {
+            if(i > 2)
+            {
+                printf("tng error : if you want to use -h or --help option use it alone\n");
+                return 1;
+            }
+            else
+            {
+                print_usage();
+            }
+
+        }
         else
         {
             TNG_ARG_STACK.push_back(argv[i]);
         }
     }
-   
-        if (strcmp(argv[1], "-h") || strcmp(argv[1], "--help"))
-        {
-            if(argc > 2)
-            {
-                fprintf
-                    (
-                        stderr ,
-                        "tng Warrning :You have to use --help option alone for tng result"
-                    );
-                
-            }
 
-            print_usage();
-        
+
+   ///     std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
+   ///     printf("it true\nso it work now");
+
+
+        TNG_MAKE_FILE(TNG_ARG_STACK,  TNG_CONFIG, TNG_LICENSE);
+
+        for(std::string r : TNG_ARG_STACK)
+        {
+            std::cout << r << "\n";
         }
 
-            
-        std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
-        printf("it true\nso it work now");
-                
-            
-        TNG_MAKE_FILE(TNG_ARG_STACK,  TNG_CONFIG, TNG_LICENSE);
-                
+
 
         /*
-        TNG_MAKE_FILE(TNG_ARG_STACK , TNG_CONFIG ,TNG_LICENSE);        
-        
+        TNG_MAKE_FILE(TNG_ARG_STACK , TNG_CONFIG ,TNG_LICENSE);
+
 
             std::string FileName = argv[argc];
             std::ofstream file;
@@ -100,4 +99,4 @@ int main(int argc,char* argv[])
         return 0;
     }
 
-    
+
