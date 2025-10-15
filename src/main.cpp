@@ -1,14 +1,13 @@
-    #include "makefile.h"
-    #include <cstdint>
+
     #include <cstdio>
-    #include <iomanip>
     #include <string>
-    #include <string.h>
+    #include <string>
     #include <vector>
     #include <print>
     #include <iostream>
-
-    std::vector<std::string> TNG_ARG_STACK = {};
+    #include "../include/handle_args.hpp"
+    
+    std::vector<std::string> TNG_ARG_STACK ={};
 
     char* Config_Name;
     char* License_Name;
@@ -40,39 +39,16 @@ int main(int argc,char* argv[])
         return 1;
     }
 
-
-    for(int8_t i  = 1 ;i < argc ; i++)
+    
+    for(auto i = 0 ; i < argc ; ++i)
     {
-        std::cout << "hi this is argv[i]" << argv[i] << "\n" <<std::endl;
-        if (std::string(argv[i]) == "-c" || std::string(argv[i]) == "--config")
-        {
-            TNG_CONFIG = true;
-        }
-        else if (std::string(argv[i]) == "-l" || std::string (argv[i]) == "--license")
-        {
-            TNG_LICENSE = true;
-        }
-        else if(std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help")
-        {
-            if(i > 2)
-            {
-                printf("tng error : if you want to use -h or --help option use it alone\n");
-                return 1;
-            }
-            else
-            {
-                print_usage();
-            }
-
-        }
-        else
-        {
-            TNG_ARG_STACK.push_back(argv[i]);
-        }
+    TNG_ARG_STACK.push_back(argv[i]);
     }
 
+    handle_args(TNG_ARG_STACK);
 
-   ///     std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
+
+///     std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
    ///     printf("it true\nso it work now");
 
 
