@@ -1,15 +1,67 @@
   
   #include "../include/tng_make_file.hpp"
+
+#include <filesystem>
   #include <fstream>
-  #include <print>
-  #include <vector>
-  #include <string>
+#include <streambuf>
 
   #define STRING(X , Y) do{std::string X = Y;} while(0);
 
+  
+  #define gen_file do{for(auto it : arguments){files.open(it , std::ofstream::out);}}while(0);
+//  #define gen_file_error do{if(files){files.open(it , std::ofstream::out);}}while(0);
 
-void TNG_MAKE_FILE(std::vector<std::string> arguments , bool TNG_CONFIG , bool TNG_LICENSE)
+      struct passwd *pw = getpwuid(getuid());
+      const char *homedir = pw->pw_dir;
+
+int tng_make_file(std::vector<std::string> arguments , std::string* config_filename ,std::string* license_filename)
 {
+  std::ofstream files;
+  if(config_filename == nullptr)
+  {
+    if(license_filename == nullptr)
+    {
+      std::ofstream files;
+      for(std::string r : arguments)
+      {
+        files.open(r);        
+        if(!files.is_open())
+        {
+          std::cout << "tng error : file " << r << " can't get created.\n check directory or user permisions" ;
+        }
+      }
+    }
+  
+    std::string license_file_path = "/usr/share/common-licenses/" + *license_filename;       
+    
+/// std::ofstream FN f;
+    if(!std::filesystem::exists(license_file_path))
+    {
+      std::cout << "tng error : license file name (" << license_file_path <<") ccould't find.\n"; 
+      return 0;
+    }
+
+    std::ifstream LCF (license_file_path);
+    
+    if(!LCF.is_open())
+    {
+      std::cout << "tng error : tng can't open license file for streaming\ncheck license filepath or user permision\n";
+      return 0;      
+    }
+      
+    for(std::string r : arguments)
+    {
+      std::filebuf *license_stream_buffer = LCF.rdbuf();
+       
+      
+    }
+  }
+  else
+  {
+    
+  }
+  
+}
 
     
 ///       add config file's or license file's to
@@ -18,10 +70,12 @@ void TNG_MAKE_FILE(std::vector<std::string> arguments , bool TNG_CONFIG , bool T
             std::ofstream file;
 ///            file.open(arguments[i] , std::ofstream::out);
 ///  file.close();
-
-
-
 }
+
+
+
+
+  
 
 
 

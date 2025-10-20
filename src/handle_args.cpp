@@ -2,6 +2,7 @@
 #include <cerrno>
 #include <csignal>
 #include <iostream>
+#include <stdatomic.h>
 #include <vector>
 #define texit return 0;
 
@@ -48,7 +49,10 @@ int handle_args( std::vector<std::string> tng_args_vec)
         texit;
       }
       else
-      config_filename = tng_args_vec[iit];
+      {
+        config_filename = tng_args_vec[iit];
+        tng_args_vec.erase(tng_args_vec.begin() + iit);
+      }
     }
     else if(it == "-l" || it == "-license")
     {
@@ -58,7 +62,10 @@ int handle_args( std::vector<std::string> tng_args_vec)
         texit;
       }
       else
-      license_name = tng_args_vec[iit];
+      {
+        license_name = tng_args_vec[iit];
+        tng_args_vec.erase(tng_args_vec.begin() + iit);
+      }
     }
     
   }
