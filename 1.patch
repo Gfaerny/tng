@@ -1,0 +1,245 @@
+From 26e838365ecf02c0245775b4766c883bee788d65 Mon Sep 17 00:00:00 2001
+From: gfaerny <gfaerny@gmail.com>
+Date: Wed, 15 Oct 2025 23:07:14 +0330
+Subject: [PATCH] add handle_args section for handling arguments reaction's
+
+handle_args gonna got control over tng reaction to argument's
+---
+ Makefile                  | 20 +++++++----
+ include/handle_args.hpp   |  0
+ include/tng_make_file.hpp |  5 +++
+ src/handle_args.cpp       | 71 +++++++++++++++++++++++++++++++++++++++
+ src/main.cpp              | 46 ++++++-------------------
+ src/tng_make_file.cpp     | 27 +++++++++++++++
+ 6 files changed, 128 insertions(+), 41 deletions(-)
+ create mode 100644 include/handle_args.hpp
+ create mode 100644 include/tng_make_file.hpp
+ create mode 100644 src/handle_args.cpp
+ create mode 100644 src/tng_make_file.cpp
+
+diff --git a/Makefile b/Makefile
+index 63db38c..a3850e3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,10 +1,18 @@
+ CXX = g++
+ CFLAGS = -static -I$(PWD)/include
+-
+-build: obj
++SRDIR := $(PWD)/src/
++BUILDDIR := $(PWD)/build/
++build: tng
+ 	@mkdir -p $(PWD)/build
+-	$(CXX) $(CFLAGS) -o $(PWD)/build/main $(PWD)/src/main.o $(PWD)/src/makefile.o
++	$(CXX) $(CFLAGS) -o $(BUILDDIR)/tng $(SRDIR)/main.o $(SRDIR)/makefile.o
++
++tng: main.o tng_make_file.o handle_args.o
++	
++main.o:
++	$(CXX) $(CFLAGS) -c $(SRDIR)/main.cpp $(SRDIR)/main.o
++		
++tng_make_file.o:
++	$(CXX) $(CFLAGS) -c $(SRDIR)/makefile.o $(SRDIR)/tng_make_file.cpp
+ 
+-obj:
+-	$(CXX) $(CFLAGS) -c $(PWD)/src/main.cpp -o $(PWD)/src/main.o
+-	$(CXX) $(CFLAGS) -c $(PWD)/src/makefile.cpp -o $(PWD)/src/makefile.o
++handle_args.o:
++	$(CXX) $(CFLAGS) -c $(SRDIR)/handle_args.o $(SRDIR)/handle_args.cpp
+diff --git a/include/handle_args.hpp b/include/handle_args.hpp
+new file mode 100644
+index 0000000..e69de29
+diff --git a/include/tng_make_file.hpp b/include/tng_make_file.hpp
+new file mode 100644
+index 0000000..8af0856
+--- /dev/null
++++ b/include/tng_make_file.hpp
+@@ -0,0 +1,5 @@
++#pragma once
++#include <vector>
++#include <string>
++
++void TNG_MAKE_FILE(const std::vector<std::string> , const bool TNG_CONFIG , const bool TNG_LICENSE);
+diff --git a/src/handle_args.cpp b/src/handle_args.cpp
+new file mode 100644
+index 0000000..4fcf0f2
+--- /dev/null
++++ b/src/handle_args.cpp
+@@ -0,0 +1,71 @@
++#include "../include/handle_args.hpp"
++#include <cerrno>
++#include <csignal>
++#include <iostream>
++#include <vector>
++#define texit return 0;
++
++
++std::string config_filename = "" , license_name = "";
++int iit = 0;
++
++
++int handle_args( std::vector<std::string> tng_args_vec)
++{
++
++  for(auto it: tng_args_vec)
++  {
++    ++iit;
++
++    if(it == "-h" || it == "--help")
++    {
++
++      if(iit > 1)
++      {
++      std::cout << "you have to use -h or --help option alone" << '\n' << "use --help or -h option's to see usage";
++      return 0;
++      }
++      else
++      {
++        std::cout << "tng usage : tng -[OPTIONS] [OPTION_CONFIG_NAME] [FILENAME]" <<'\n'
++        << "available options :"<<  '\n'
++        << "-c    or    --config  :   use your writed config's file for adding it to files that going to created"<< '\n'
++        <<'\n'
++        <<'\n'
++        << "-l    or    --license :   use you writted or available license for adding them to you file"
++        <<'\n'
++        <<'\n'
++        << "-h    or    --help    :   use it to see this massage and tng gotta exit"<<'\n';
++///     we got more thing to explain
++      }
++        
++    }
++    else if(it == "-c" || "--config")
++    {
++      if(tng_args_vec[iit].empty())
++      {
++        std::cout << "no config file selected" << '\n' << "use --help or -h option's to see usage";
++        texit;
++      }
++      else
++      config_filename = tng_args_vec[iit];
++    }
++    else if(it == "-l" || it == "-license")
++    {
++      if(tng_args_vec[iit].empty())      
++      {
++        std::cout << "no license file selected" << '\n' << "use --help or -h option's for see usage";
++        texit;
++      }
++      else
++      license_name = tng_args_vec[iit];
++    }
++    
++  }
++
++  tng_make_file(tng_args_vec);
++  
++  
++    
++return 0;
++}  
+diff --git a/src/main.cpp b/src/main.cpp
+index 8dbb500..08aec58 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -1,14 +1,13 @@
+-    #include "makefile.h"
+-    #include <cstdint>
++
+     #include <cstdio>
+-    #include <iomanip>
+     #include <string>
+-    #include <string.h>
++    #include <string>
+     #include <vector>
+     #include <print>
+     #include <iostream>
+-
+-    std::vector<std::string> TNG_ARG_STACK = {};
++    #include "../include/handle_args.hpp"
++    
++    std::vector<std::string> TNG_ARG_STACK ={};
+ 
+     char* Config_Name;
+     char* License_Name;
+@@ -40,39 +39,16 @@ int main(int argc,char* argv[])
+         return 1;
+     }
+ 
+-
+-    for(int8_t i  = 1 ;i < argc ; i++)
++    
++    for(auto i = 0 ; i < argc ; ++i)
+     {
+-        std::cout << "hi this is argv[i]" << argv[i] << "\n" <<std::endl;
+-        if (std::string(argv[i]) == "-c" || std::string(argv[i]) == "--config")
+-        {
+-            TNG_CONFIG = true;
+-        }
+-        else if (std::string(argv[i]) == "-l" || std::string (argv[i]) == "--license")
+-        {
+-            TNG_LICENSE = true;
+-        }
+-        else if(std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help")
+-        {
+-            if(i > 2)
+-            {
+-                printf("tng error : if you want to use -h or --help option use it alone\n");
+-                return 1;
+-            }
+-            else
+-            {
+-                print_usage();
+-            }
+-
+-        }
+-        else
+-        {
+-            TNG_ARG_STACK.push_back(argv[i]);
+-        }
++    TNG_ARG_STACK.push_back(argv[i]);
+     }
+ 
++    handle_args(TNG_ARG_STACK);
++
+ 
+-   ///     std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
++///     std::cout << TNG_CONFIG << " =   TNG_CONFIG " << "TNG_LICENSE = "<< TNG_LICENSE << std::endl;
+    ///     printf("it true\nso it work now");
+ 
+ 
+diff --git a/src/tng_make_file.cpp b/src/tng_make_file.cpp
+new file mode 100644
+index 0000000..0d7707a
+--- /dev/null
++++ b/src/tng_make_file.cpp
+@@ -0,0 +1,27 @@
++  
++  #include "../include/tng_make_file.hpp"
++  #include <fstream>
++  #include <print>
++  #include <vector>
++  #include <string>
++
++  #define STRING(X , Y) do{std::string X = Y;} while(0);
++
++
++void TNG_MAKE_FILE(std::vector<std::string> arguments , bool TNG_CONFIG , bool TNG_LICENSE)
++{
++
++    
++///       add config file's or license file's to
++
++///         arguments.erase();
++            std::ofstream file;
++///            file.open(arguments[i] , std::ofstream::out);
++///  file.close();
++
++
++
++}
++
++
++
+-- 
+2.47.3
+
