@@ -8,7 +8,7 @@
   #define STRING(X , Y) do{std::string X = Y;} while(0);
 
   
-  #define gen_file do{for(auto it : arguments){files.open(it , std::ofstream::out);}}while(0);
+//  #define gen_file do{for(auto it : arguments){files.open(it , std::ofstream::out);}}while(0);
 //  #define gen_file_error do{if(files){files.open(it , std::ofstream::out);}}while(0);
 
       struct passwd *pw = getpwuid(getuid());
@@ -51,9 +51,20 @@ int tng_make_file(std::vector<std::string> arguments , std::string* config_filen
       
     for(std::string r : arguments)
     {
+
+    /// this section stand for if we don't order option --no-comment 
+
+      std::ifstream ifr(r);
       std::filebuf *license_stream_buffer = LCF.rdbuf();
-       
-      
+      std::filebuf *target_file_buffer = ifr.rdbuf();
+
+      char copy_license_buffer = license_stream_buffer->sbumpc();
+
+      while(copy_license_buffer != EOF)
+      {
+        
+        
+      }
     }
   }
   else
