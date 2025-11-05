@@ -1,16 +1,39 @@
 
+#include <cstdlib>
 #include <fstream>
 #include <string>
+#include <sys/types.h>
 
-const char *type_of_comment (std::string &r)
+std::string extention_type(std::string filename)
 {
-  unsigned int itr = 0;
-  for(char rr : r)
+  std::string file_extention_name = "";
+  for(char it :filename)
   {
-    ++itr;
-   /// if()
-        
+    if(it != '.')    
+    {
+      file_extention_name += it;
+    }
+
+    else if(it == '.')
+    {
+      if(file_extention_name != "")
+        file_extention_name = "";       
+    }
+    
+  }
+}
+
+
+
+const u_int16_t type_num(std::string file_extention) 
+{
+
+  file_extention[0] = '';
+  
+  if (file_extention == "c" || "cpp" || "css")
+  {
+    
   }
   
-    
+  
 }
