@@ -21,16 +21,24 @@ std::string extention_type(std::string filename)
     }
     
   }
+  return file_extention_name;
 }
 
 
-
+/// use u_int16_t cause we have over 10000 file's extention name
 const u_int16_t type_num(std::string file_extention) 
 {
+ 
+  if (file_extention == "c" || "cpp" || "css" || "cc" )
+  {
+    /*
+    C-like comment
+    -> //comment 
+    -> /*coment*/
+  return 1;
+  }
 
-  file_extention[0] = '';
-  
-  if (file_extention == "c" || "cpp" || "css")
+  else if ()
   {
     
   }
