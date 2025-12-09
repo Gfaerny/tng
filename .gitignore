@@ -7,3 +7,4 @@ tng
 /build/
 compile_commands.json
 /r/
+*.patch
