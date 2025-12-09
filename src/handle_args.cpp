@@ -1,6 +1,6 @@
 #include "../include/handle_args.hpp"
 #include "../include/tng_make_file.hpp"
-#include <cstdio>
+
 
 
 std::string config_filename = "" , license_name = "";
@@ -16,7 +16,6 @@ int handle_args( std::vector<std::string> tng_args_vec)
 
     if(it == "-h" || it == "--help")
     {
-
       if(iit > 1)
       {
       std::printf ("you have to use -h or --help option alone\n"
@@ -62,6 +61,7 @@ int handle_args( std::vector<std::string> tng_args_vec)
         license_bool = true;
       }
     }
+
     
   }
 

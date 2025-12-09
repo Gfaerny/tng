@@ -1,11 +1,4 @@
-
 #include "../include/tng_make_file.hpp"
-
-#include <cstdlib>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <streambuf>
 
 #define STRING(X , Y) do{std::string X = Y;} while(0);
 
@@ -27,12 +20,6 @@ const char* type(const char* r)
   return last_dot + 1;
 }
 
-
-
-
-
-//  #define gen_file do{for(auto it : arguments){files.open(it , std::ofstream::out);}}while(0);
-//  #define gen_file_error do{if(files){files.open(it , std::ofstream::out);}}while(0);
 
 struct passwd *pw = getpwuid(getuid());
 const char *homedir = pw->pw_dir;
