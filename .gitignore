@@ -1,4 +1,3 @@
-tng
 *m
 *.o
 /src/*.o
@@ -6,5 +5,17 @@ tng
 /.cache/
 /build/
 compile_commands.json
-/r/
+r/
 *.patch
+Makefile
+.taskwarrior/
+.tasckrc
+build/
+cmake-build*/
+CMakeFiles*/
+cmake-install.cmake
+.exe
+.o
+.a
+.cach/
+
