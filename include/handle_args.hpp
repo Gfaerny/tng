@@ -2,11 +2,13 @@
 
 #include <cerrno>
 #include <csignal>
-#include <iostream>
-#include <stdatomic.h>
 #include <vector>
 #include <cstdio>
-#define texit return 0;
+#include <filesystem>
 
+#include "../include/tng_make_file.hpp"
+#include "../include/config.hpp"
 
-int handle_args( std::vector<std::string> tng_args_vec);
+void handle_args( std::vector<std::string> tng_args_vec);
+
+inline std::string license_filename {""};
