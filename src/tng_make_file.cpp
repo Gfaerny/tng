@@ -1,92 +1,149 @@
-  
-  #include "../include/tng_make_file.hpp"
+#include "../include/tng_make_file.hpp"
 
-#include <filesystem>
-  #include <fstream>
-#include <streambuf>
-
-  #define STRING(X , Y) do{std::string X = Y;} while(0);
-
-  
-//  #define gen_file do{for(auto it : arguments){files.open(it , std::ofstream::out);}}while(0);
-//  #define gen_file_error do{if(files){files.open(it , std::ofstream::out);}}while(0);
-
-      struct passwd *pw = getpwuid(getuid());
-      const char *homedir = pw->pw_dir;
-
-int tng_make_file(std::vector<std::string> arguments , std::string* config_filename ,std::string* license_filename)
+/**
+ * Return basic_string of file name extension string
+ * like: file.cpp -> "cpp" , file.extension -> "extension" , file_no_extension
+ * -> file_no_extension
+ */
+std::basic_string<char> extension_type(const std::string &filename)
 {
-  std::ofstream files;
-  if(config_filename == nullptr)
-  {
-    if(license_filename == nullptr)
+    std::basic_string<char> file_extention_name = {""};
+    for (char it : filename)
     {
-      std::ofstream files;
-      for(std::string r : arguments)
-      {
-        files.open(r);        
-        if(!files.is_open())
+        if (it != '.')
         {
-          std::cout << "tng error : file " << r << " can't get created.\n check directory or user permisions" ;
+            file_extention_name += it;
         }
-      }
+        else if (it == '.')
+        {
+            if (file_extention_name != "")
+                file_extention_name = "";
+        }
     }
-  
-    std::string license_file_path = "/usr/share/common-licenses/" + *license_filename;       
-    
-/// std::ofstream FN f;
-    if(!std::filesystem::exists(license_file_path))
-    {
-      std::cout << "tng error : license file name (" << license_file_path <<") ccould't find.\n"; 
-      return 0;
-    }
-
-    std::ifstream LCF (license_file_path);
-    
-    if(!LCF.is_open())
-    {
-      std::cout << "tng error : tng can't open license file for streaming\ncheck license filepath or user permision\n";
-      return 0;      
-    }
-      
-    for(std::string r : arguments)
-    {
-
-    /// this section stand for if we don't order option --no-comment 
-
-      std::ifstream ifr(r);
-      std::filebuf *license_stream_buffer = LCF.rdbuf();
-      std::filebuf *target_file_buffer = ifr.rdbuf();
-
-      char copy_license_buffer = license_stream_buffer->sbumpc();
-
-      while(copy_license_buffer != EOF)
-      {
-        
-        
-      }
-    }
-  }
-  else
-  {
-    
-  }
-  
+    return file_extention_name;
 }
 
-    
-///       add config file's or license file's to
+/**
+ * Creat normal file using name_string vector list
+ * This function exist to creat empty file and may used by other write_file*
+ * functoin's
+ */
+void write_file(std::vector<std::string> &file_name)
+{
+    for (std::string r : file_name)
+    {
+        std::ofstream files;
 
-///         arguments.erase();
-            std::ofstream file;
-///            file.open(arguments[i] , std::ofstream::out);
-///  file.close();
+        files.open(r);
+        if (!files.is_open())
+        {
+            std::printf("tng error : File %s can't get created.\n check "
+                        "directory or user permisions",
+                        r.c_str());
+            EXIT_FAILURE;
+        }
+        files.close();
+    }
+    return;
 }
 
+/**
+ * Write license file
+ */
+void write_file_license(const std::vector<std::string> &filename, const std::string &license_filename)
+{
+    std::string license_file_path = "/usr/share/common-licenses/" + license_filename;
 
+    if (!std::filesystem::exists(license_file_path))
+    {
+        std::printf("tng error : License file name (%s) could not find.\n", license_file_path.c_str());
+        EXIT_FAILURE;
+    }
 
+    std::ifstream license_stream_obj(license_file_path);
 
-  
+    if (!license_stream_obj.is_open())
+    {
+        std::printf("tng error : tng can't open license file for streaming\ncheck"
+                    "license exist in common_license or check user permision\n");
+        EXIT_FAILURE;
+    }
 
+    write_file(filename);
+    std::filebuf *license_stream_buffer = license_stream_obj.rdbuf();
+    std::ofstream ofr;
 
+    for (std::string r : filename)
+    {
+        ofr.open(r);
 
+        // Error if input file didn't got created or we have issue in opening
+        // input file
+        if (!ofr.is_open())
+        {
+            std::printf("tng error : Can't write license in %s", r.c_str());
+            EXIT_FAILURE;
+        }
+
+        std::filebuf *target_file_buffer = ofr.rdbuf();
+
+        char license_filebuf_char_intr = license_stream_buffer->sbumpc();
+
+        while (license_filebuf_char_intr != EOF)
+        {
+            target_file_buffer->sputc(license_filebuf_char_intr);
+            license_filebuf_char_intr = license_stream_buffer->sbumpc();
+        }
+    }
+    return;
+}
+/**
+ * Write comment to file from config
+ */
+void write_file_config(const std::vector<std::string> &vector_filename, const std::string *config_filename,
+                       const std::string extention_filename)
+{
+    config Config;
+    Config.load(config_path);
+    for (std::string r : vector_filename)
+    {
+        if (Config.use_ewline_for_multi_line == YES)
+        {
+        }
+        if (Config.add_text == YES)
+        {
+        }
+        // Here we have to use Config class
+    }
+}
+/**
+ * Main creating file's function
+ * We use this function for call all tng_make_file function effencitevly
+ */
+void tng_make_file(const std::vector<std::string> &arguments, const std::string *config_filename,
+                   const std::string *license_filename)
+{
+    std::ofstream files;
+    if (config_filename == nullptr)
+    {
+        if (license_filename == nullptr)
+        {
+            write_file(arguments);
+            EXIT_SUCCESS;
+        }
+
+        else
+        {
+            write_file(arguments);
+            write_file_license(arguments, *license_filename);
+            EXIT_SUCCESS;
+        }
+    }
+
+    write_file(arguments);
+    write_file_license(arguments, *license_filename);
+
+    return;
+}
+/// now here we have to write all file with both config  config true ; license
+/// = true;
