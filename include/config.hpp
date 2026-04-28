@@ -35,7 +35,7 @@ class config
     ~config();
     void handle_error(const std::string& error_name);
     std::string clear_char_space(std::string &string);
-    bool use_ewline_for_multi_line {YES};
+    bool use_newline_for_multi_line {YES};
     bool add_text {NO};
     std::vector<std::string> vec_license_dir_path = {"/usr/sharer/common-license/"};
     std::pair<std::vector<std::string>, std::vector<std::string>> extension_files_config_spec;

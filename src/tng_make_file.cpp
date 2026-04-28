@@ -7,20 +7,20 @@
  */
 std::basic_string<char> extension_type(const std::string &filename)
 {
-    std::basic_string<char> file_extention_name = {""};
+    std::basic_string<char> file_extension_name = {""};
     for (char it : filename)
     {
         if (it != '.')
         {
-            file_extention_name += it;
+            file_extension_name += it;
         }
         else if (it == '.')
         {
-            if (file_extention_name != "")
-                file_extention_name = "";
+            if (file_extension_name != "")
+                file_extension_name = "";
         }
     }
-    return file_extention_name;
+    return file_extension_name;
 }
 
 /**
@@ -101,14 +101,15 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
  * Write comment to file from config
  */
 void write_file_config(const std::vector<std::string> &vector_filename, const std::string *config_filename,
-                       const std::string extention_filename)
+                       const std::string &extension_filename)
 {
     config Config;
     Config.load(config_path);
     for (std::string r : vector_filename)
     {
-        if (Config.use_ewline_for_multi_line == YES)
+        if (Config.use_newline_for_multi_line == YES)
         {
+            
         }
         if (Config.add_text == YES)
         {
