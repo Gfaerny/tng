@@ -6,4 +6,4 @@
 
 #include "../include/handle_args.hpp"
 
-void init(int arg, char* argv[]);
+void init(int arg, char *argv[]);

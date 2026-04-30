@@ -109,7 +109,6 @@ void write_file_config(const std::vector<std::string> &vector_filename, const st
     {
         if (Config.use_newline_for_multi_line == YES)
         {
-            
         }
         if (Config.add_text == YES)
         {

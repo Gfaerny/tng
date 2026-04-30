@@ -3,18 +3,18 @@
 /**
  * Initialize tng
  */
-void init(int arg , char* argv[])
+void init(int arg, char *argv[])
 {
-  // Getting arguments and write it to tng_args_vec
-  std::vector<std::string> tng_args_vec; 
-  for(int i = 0; i < arg; ++i)
-  {
-    std::string argv_string = argv[i];
-    tng_args_vec.push_back(argv_string);
-  }
+    // Getting arguments and write it to tng_args_vec
+    std::vector<std::string> tng_args_vec;
+    for (int i = 0; i < arg; ++i)
+    {
+        std::string argv_string = argv[i];
+        tng_args_vec.push_back(argv_string);
+    }
 
-  // Pass tng_args_vec to handle_args function 
-  handle_args(tng_args_vec);
-  
-  return ;
+    // Pass tng_args_vec to handle_args function
+    handle_args(tng_args_vec);
+
+    return;
 }
