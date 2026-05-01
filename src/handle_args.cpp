@@ -2,7 +2,7 @@
 
 uint16_t iit = 0;
 
-bool license_bool = NO, config_bool = NO;
+bool license_bool{NO}, config_bool{NO};
 
 void handle_args(std::vector<std::string> &tng_args_vec)
 {

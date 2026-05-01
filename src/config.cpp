@@ -1,13 +1,27 @@
 #include "../include/config.hpp"
-
-std::string config::clear_char_space(std::string &string)
+/*
+ * Remove space charecter from string
+ * Except between '"' charecters
+ */
+std::string &config::clear_char_space(std::string &string)
 {
-    // Remove that space from string
+    bool after_befor{NO};
     for (unsigned long i = 0; i < string.length(); ++i)
     {
         if (string[i] == ' ')
         {
-            string.erase(i, 1);
+            if (after_befor)
+            {
+                // Do nothing
+            }
+            else
+            {
+                string.erase(i, 1);
+            }
+        }
+        else if (string[i] == '"')
+        {
+            after_befor = {YES};
         }
     }
     return string;
@@ -17,12 +31,12 @@ int config::load(const std::string &config_path)
 {
     // We first try to open config file
     // We want config file be hardcoded but also can changed by argument
-    // Thet hardcoded address = $HOME/.config/tng/tng.conf
-    // Check config file
+    // Thet hardcoded address = $HOME/.config/tng/tng.conf but also can changed by --config or -c option
+    // Check tng.conf config file
     std::ifstream config_file(config_path);
     if (!std::filesystem::exists(config_path))
     {
-        std::printf("tng error : config file dosent exist -> $HOME/.config/tng/tng.conf");
+        std::printf("tng error : config file do not exist -> %s", config_path.c_str());
         EXIT_FAILURE;
     }
     // Print witch config now got loaded
