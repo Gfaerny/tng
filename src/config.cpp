@@ -1,4 +1,5 @@
 #include "../include/config.hpp"
+#include <stdexcept>
 /*
  * Remove space charecter from string
  * Except between '"' charecters
@@ -26,7 +27,9 @@ std::string &config::clear_char_space(std::string &string)
     }
     return string;
 }
-
+/*
+ * Config loader and config value setter
+ */
 int config::load(const std::string &config_path)
 {
     // We first try to open config file
@@ -37,7 +40,7 @@ int config::load(const std::string &config_path)
     if (!std::filesystem::exists(config_path))
     {
         std::printf("tng error : config file do not exist -> %s", config_path.c_str());
-        EXIT_FAILURE;
+        throw std::runtime_error("failed to open file");
     }
     // Print witch config now got loaded
     std::printf("tng alert : config that used -> %s", config_path.c_str());

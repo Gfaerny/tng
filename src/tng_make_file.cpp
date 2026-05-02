@@ -1,4 +1,5 @@
 #include "../include/tng_make_file.hpp"
+#include <stdexcept>
 
 /**
  * Return basic_string of file name extension string
@@ -103,17 +104,23 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
 void write_file_config(const std::vector<std::string> &vector_filename, const std::string *config_filename,
                        const std::string &extension_filename)
 {
-    config Config;
-    Config.load(config_path);
-    for (std::string r : vector_filename)
+    try
     {
-        if (Config.use_newline_for_multi_line == YES)
+        config Config;
+        Config.load(config_path);
+        for (std::string r : vector_filename)
         {
+            if (Config.use_newline_for_multi_line == YES)
+            {
+            }
+            if (Config.add_text == YES)
+            {
+            }
+            // Here we have to use Config class
         }
-        if (Config.add_text == YES)
-        {
-        }
-        // Here we have to use Config class
+    }
+    catch (std::runtime_error &error)
+    {
     }
 }
 /**
