@@ -19,21 +19,21 @@ void handle_args(std::vector<std::string> &tng_args_vec)
                 "created\n\n\n"
                 "-l    or    --license :   use you writted or available license for adding them to you file\n\n\n"
                 "-h    or    --help    :   use it to see this massage and tng gotta exit\n");
-            EXIT_SUCCESS;
+            return;
         }
         // Config
         else if (it == "-c" || "--config")
         {
-            // Is Next argument is exist ?
+            // Is Next argument exist ?
             if (tng_args_vec.at(iit).empty())
             {
                 std::printf("tng error : No config file selected\nuse --help or -h option's to see usage");
-                EXIT_FAILURE;
+                throw tng_error{.error_type = "EXPECT_ARGUMENT"};
             }
             else if (config_bool == YES)
             {
                 std::printf("tng error : You can't address cofing file more then one time per command");
-                EXIT_FAILURE;
+                throw tng_error{.error_type = "UNCORRECT_ARGUMENT_USE"};
             }
             else
             {
@@ -50,14 +50,14 @@ void handle_args(std::vector<std::string> &tng_args_vec)
             if (tng_args_vec.at(iit).empty())
             {
                 std::printf("tng error : No license file selected\nuse --help or -h option's for see usage");
-                EXIT_FAILURE;
+                throw tng_error{.error_type = "EXPECT_ARGUMENT"};
             }
             else if (license_bool == YES)
             {
                 std::printf("tng error : You can't address license file more then one time per command, but you  can "
                             "use .config file for setting license PATH's that can help you find you license when it is "
                             "not in this directory\n");
-                EXIT_FAILURE;
+                throw tng_error{.error_type = "UNCORRECT_ARGUMENT_USE"};
             }
             else
             {

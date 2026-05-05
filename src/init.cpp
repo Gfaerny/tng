@@ -1,5 +1,5 @@
-#include "../include/handle_args.hpp"
-
+#include "../include/init.hpp"
+#include <cstdlib>
 /**
  * Initialize tng
  */
@@ -13,8 +13,21 @@ void init(int arg, char *argv[])
         tng_args_vec.push_back(argv_string);
     }
 
-    // Pass tng_args_vec to handle_args function
-    handle_args(tng_args_vec);
-
+    // Pass tng_args_vec to handle_args function and handle exception
+    try
+    {
+        handle_args(tng_args_vec);
+    }
+    catch (tng_error &e)
+    {
+        if (e.error_type == "EXPECT_ARGUMENT")
+        {
+            return;
+        }
+        else
+        {
+            return;
+        }
+    }
     return;
 }

@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <vector>
 
-#include "../include/config.hpp"
+#include "config.hpp"
 
 void write_file(std::vector<std::string> file_name);
 std::basic_string<char> extension_type(const std::string &filename);
