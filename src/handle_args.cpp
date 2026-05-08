@@ -24,7 +24,7 @@ void handle_args(std::vector<std::string> &tng_args_vec)
         // Config
         else if (it == "-c" || "--config")
         {
-            // Is Next argument exist ?
+            // Is next argument exist ?
             if (tng_args_vec.at(iit).empty())
             {
                 std::printf("tng error : No config file selected\nuse --help or -h option's to see usage");

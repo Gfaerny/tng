@@ -1,5 +1,4 @@
 #include "../include/tng_make_file.hpp"
-#include <stdexcept>
 
 /**
  * Return basic_string of file name extension string
@@ -41,7 +40,7 @@ void write_file(std::vector<std::string> &file_name)
             std::printf("tng error : File %s can't get created.\n check "
                         "directory or user permisions",
                         r.c_str());
-            EXIT_FAILURE;
+            throw tng_error{.error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
         }
         files.close();
     }
@@ -58,7 +57,7 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
     if (!std::filesystem::exists(license_file_path))
     {
         std::printf("tng error : License file name (%s) could not find.\n", license_file_path.c_str());
-        EXIT_FAILURE;
+        throw tng_error{.error_massage = {"LICENSE_FILE_CAN'T_FIND"}};
     }
 
     std::ifstream license_stream_obj(license_file_path);
@@ -67,7 +66,7 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
     {
         std::printf("tng error : tng can't open license file for streaming\ncheck"
                     "license exist in common_license or check user permision\n");
-        EXIT_FAILURE;
+        throw tng_error{.error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
     }
 
     write_file(filename);
@@ -83,7 +82,7 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
         if (!ofr.is_open())
         {
             std::printf("tng error : Can't write license in %s", r.c_str());
-            EXIT_FAILURE;
+            throw tng_error{.error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
         }
 
         std::filebuf *target_file_buffer = ofr.rdbuf();
@@ -116,10 +115,9 @@ void write_file_config(const std::vector<std::string> &vector_filename, const st
             if (Config.add_text == YES)
             {
             }
-            // Here we have to use Config class
         }
     }
-    catch (std::runtime_error &error)
+    catch (tng_error &e)
     {
     }
 }
@@ -136,14 +134,14 @@ void tng_make_file(const std::vector<std::string> &arguments, const std::string 
         if (license_filename == nullptr)
         {
             write_file(arguments);
-            EXIT_SUCCESS;
+            return;
         }
 
         else
         {
             write_file(arguments);
             write_file_license(arguments, *license_filename);
-            EXIT_SUCCESS;
+            return;
         }
     }
 
@@ -152,5 +150,3 @@ void tng_make_file(const std::vector<std::string> &arguments, const std::string 
 
     return;
 }
-/// now here we have to write all file with both config  config true ; license
-/// = true;

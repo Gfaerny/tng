@@ -3,5 +3,5 @@
 int main(int argc, char *argv[])
 {
     init(argc, argv);
-    return EXIT_SUCCESS;
+    return 0;
 }

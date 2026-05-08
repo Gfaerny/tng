@@ -8,6 +8,7 @@
 #include <fstream>
 #include <print>
 #include <pwd.h>
+#include <stdexcept>
 #include <string>
 #include <unistd.h>
 #include <utility>
@@ -25,14 +26,17 @@ class config
 {
   public:
     ~config();
+
+    std::string &clear_char_space(std::string &string);
+
     // All config values
     bool use_newline_for_multi_line{YES};
     bool add_text{NO};
     int new_line_befor_comment{0};
 
-    std::string &clear_char_space(std::string &string);
     std::vector<std::string> vec_license_dir_path = {"/usr/sharer/common-license/"};
-    std::pair<std::vector<std::string>, std::vector<std::string>> extension_files_config_spec;
+    std::pair<std::vector<std::string>, std::vector<std::string>> extension_files_config_spec{};
+    std::pair<std::string, std::vector<std::string>> license_files{};
 
     void handle_error(const std::string &error_name);
     int load(const std::string &config_path);

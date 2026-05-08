@@ -1,5 +1,5 @@
 #include "../include/config.hpp"
-#include <stdexcept>
+
 /*
  * Remove space charecter from string
  * Except between '"' charecters
@@ -101,12 +101,4 @@ int config::load(const std::string &config_path)
     }
 
     return 0;
-}
-
-void config::handle_error(const std::string &error_name)
-{
-    if (error_name == "test")
-    {
-        throw std::runtime_error("test");
-    }
 }

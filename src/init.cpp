@@ -1,5 +1,5 @@
 #include "../include/init.hpp"
-#include <cstdlib>
+
 /**
  * Initialize tng
  */

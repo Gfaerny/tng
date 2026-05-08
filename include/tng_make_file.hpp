@@ -6,13 +6,13 @@
 #include <fstream>
 #include <print>
 #include <pwd.h>
-#include <streambuf>
 #include <string>
 #include <sys/types.h>
 #include <unistd.h>
 #include <vector>
 
 #include "config.hpp"
+#include "error.hpp"
 
 void write_file(std::vector<std::string> file_name);
 std::basic_string<char> extension_type(const std::string &filename);
