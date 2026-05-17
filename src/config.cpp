@@ -1,17 +1,19 @@
 #include "../include/config.hpp"
 
+#define RESET_TOKEN token = ""
+
 /*
  * Remove space charecter from string
  * Except between '"' charecters
  */
 std::string &config::clear_char_space(std::string &string)
 {
-    bool after_befor{NO};
+    bool after_before{NO};
     for (unsigned long i = 0; i < string.length(); ++i)
     {
         if (string[i] == ' ')
         {
-            if (after_befor)
+            if (after_before)
             {
                 // Do nothing
             }
@@ -22,7 +24,7 @@ std::string &config::clear_char_space(std::string &string)
         }
         else if (string[i] == '"')
         {
-            after_befor = {YES};
+            after_before = {YES};
         }
     }
     return string;
@@ -39,17 +41,20 @@ int config::load(const std::string &config_path)
     std::ifstream config_file(config_path);
     if (!std::filesystem::exists(config_path))
     {
-        std::printf("tng error : config file do not exist -> %s", config_path.c_str());
-        throw std::runtime_error("failed to open file");
+        std::printf("tng error : config file (%s), do not exist", config_path.c_str());
+        throw tng_error{.error_type_o = error_type::file_does_n_exist,
+                        .error_massage = tepic_error_massages::C_FILE_N_EXIST(config_path)};
     }
     // Print witch config now got loaded
     std::printf("tng alert : config that used -> %s", config_path.c_str());
     std::string line{""};
     std::string seprated_word{""};
     int line_number{0};
+    // Each line that provide one of extension file comment charecter defination got counted by this varable
+    int extension_file_spec_counter{0};
     while (std::getline(config_file, line))
     {
-        line = clear_char_space(line);
+        clear_char_space(line);
         line_number += 1;
 
         if (line[0] == '#')
@@ -57,27 +62,45 @@ int config::load(const std::string &config_path)
             continue;
         }
 
-        /// Now we seprate extension file specifiers with other varables
+        // Now we seprate extension file specifiers with other varables
+
         else if (line.find("->"))
         {
+            extension_file_spec_counter += 1;
+            // After mean YES before mean NO
             bool after_before{NO};
+
             std::string token{""};
+
+            int char_number_in_line{0};
             for (char r : line)
             {
+                char_number_in_line += 1;
                 if (r == ',')
                 {
+
                     if (!after_before)
                     {
-                        extension_files_config_spec.first.push_back(token);
+                        extension_files_config_spec[extension_file_spec_counter].first.push_back(token);
                     }
                     else
                     {
-                        extension_files_config_spec.second.push_back(token);
+                        extension_files_config_spec[extension_file_spec_counter].second.push_back(token);
                     }
+                    // Reset token
+                    RESET_TOKEN;
                 }
                 else if (token == "->")
                 {
-                    after_before = true;
+                    if (!after_before)
+                        after_before = true;
+                    // else mean when '->' array symbol got foregotet
+                    else
+                    {
+                        throw tng_error{.error_type_o = error_type::c_array_dn_more,
+                                        .error_massage = tepic_error_massages::C_ARRAY_DN_MORE("")};
+                    }
+                    RESET_TOKEN;
                 }
                 else
                 {

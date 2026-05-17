@@ -40,7 +40,8 @@ void write_file(std::vector<std::string> &file_name)
             std::printf("tng error : File %s can't get created.\n check "
                         "directory or user permisions",
                         r.c_str());
-            throw tng_error{.error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
+            throw tng_error{.error_type_o = error_type::CANNOT_OPEN_CREAT_FILE,
+                            .error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
         }
         files.close();
     }
@@ -57,16 +58,18 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
     if (!std::filesystem::exists(license_file_path))
     {
         std::printf("tng error : License file name (%s) could not find.\n", license_file_path.c_str());
-        throw tng_error{.error_massage = {"LICENSE_FILE_CAN'T_FIND"}};
+        throw tng_error{.error_type_o = error_type::CANNOT_OPEN_CREAT_FILE,
+                        .error_massage = {"LICENSE_FILE_CAN'T_FIND"}};
     }
 
     std::ifstream license_stream_obj(license_file_path);
 
     if (!license_stream_obj.is_open())
     {
-        std::printf("tng error : tng can't open license file for streaming\ncheck"
+        std::printf("tng error : tng Can't open license file for streaming\ncheck"
                     "license exist in common_license or check user permision\n");
-        throw tng_error{.error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
+        throw tng_error{.error_type_o = error_type::CANNOT_OPEN_CREAT_FILE,
+                        .error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
     }
 
     write_file(filename);
@@ -82,7 +85,8 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
         if (!ofr.is_open())
         {
             std::printf("tng error : Can't write license in %s", r.c_str());
-            throw tng_error{.error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
+            throw tng_error{.error_type_o = error_type::CANNOT_OPEN_CREAT_FILE,
+                            .error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
         }
 
         std::filebuf *target_file_buffer = ofr.rdbuf();
@@ -109,6 +113,11 @@ void write_file_config(const std::vector<std::string> &vector_filename, const st
         Config.load(config_path);
         for (std::string r : vector_filename)
         {
+            for (auto efcs : Config.extension_files_config_spec)
+            {
+                // We have file_name that would be created so ask config what whe have to do for their devided by
+                // extension_file name
+            }
             if (Config.use_newline_for_multi_line == YES)
             {
             }

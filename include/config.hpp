@@ -14,6 +14,8 @@
 #include <utility>
 #include <vector>
 
+#include "../include/error.hpp"
+
 #define YES true
 #define NO false
 
@@ -25,6 +27,7 @@ inline std::string config_path = home_dir_path + "/.config/tng/tng.conf";
 class config
 {
   public:
+
     ~config();
 
     std::string &clear_char_space(std::string &string);
@@ -35,7 +38,8 @@ class config
     int new_line_befor_comment{0};
 
     std::vector<std::string> vec_license_dir_path = {"/usr/sharer/common-license/"};
-    std::pair<std::vector<std::string>, std::vector<std::string>> extension_files_config_spec{};
+    // vector that store line to line pair of extension filename and their specified comment charecter
+    std::vector<std::pair<std::vector<std::string>, std::vector<std::string>>> extension_files_config_spec{};
     std::pair<std::string, std::vector<std::string>> license_files{};
 
     void handle_error(const std::string &error_name);
