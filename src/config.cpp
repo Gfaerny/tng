@@ -1,38 +1,14 @@
 #include "../include/config.hpp"
+#include <cstddef>
+#include <memory_resource>
+#include <vector>
 
 #define RESET_TOKEN token = ""
 
 /*
- * Remove space charecter from string
- * Except between '"' charecters
- */
-std::string &config::clear_char_space(std::string &string)
-{
-    bool after_before{NO};
-    for (unsigned long i = 0; i < string.length(); ++i)
-    {
-        if (string[i] == ' ')
-        {
-            if (after_before)
-            {
-                // Do nothing
-            }
-            else
-            {
-                string.erase(i, 1);
-            }
-        }
-        else if (string[i] == '"')
-        {
-            after_before = {YES};
-        }
-    }
-    return string;
-}
-/*
  * Config loader and config value setter
  */
-int config::load(const std::string &config_path)
+int Config::load(const std::string &config_path)
 {
     // We first try to open config file
     // We want config file be hardcoded but also can changed by argument
@@ -52,76 +28,24 @@ int config::load(const std::string &config_path)
     int line_number{0};
     // Each line that provide one of extension file comment charecter defination got counted by this varable
     int extension_file_spec_counter{0};
-    while (std::getline(config_file, line))
-    {
-        clear_char_space(line);
-        line_number += 1;
-
-        if (line[0] == '#')
-        {
-            continue;
-        }
-
-        // Now we seprate extension file specifiers with other varables
-
-        else if (line.find("->"))
-        {
-            extension_file_spec_counter += 1;
-            // After mean YES before mean NO
-            bool after_before{NO};
-
-            std::string token{""};
-
-            int char_number_in_line{0};
-            for (char r : line)
-            {
-                char_number_in_line += 1;
-                if (r == ',')
-                {
-
-                    if (!after_before)
-                    {
-                        extension_files_config_spec[extension_file_spec_counter].first.push_back(token);
-                    }
-                    else
-                    {
-                        extension_files_config_spec[extension_file_spec_counter].second.push_back(token);
-                    }
-                    // Reset token
-                    RESET_TOKEN;
-                }
-                else if (token == "->")
-                {
-                    if (!after_before)
-                        after_before = true;
-                    // else mean when '->' array symbol got foregotet
-                    else
-                    {
-                        throw tng_error{.error_type_o = error_type::c_array_dn_more,
-                                        .error_massage = tepic_error_massages::C_ARRAY_DN_MORE("")};
-                    }
-                    RESET_TOKEN;
-                }
-                else
-                {
-                    token += r;
-                }
-            }
-        }
-        else
-        {
-            // Bool var config
-            if (line.find("use_newline_for_multi_line"))
-            {
-                use_newline_for_multi_line = YES;
-            }
-            else if (line.find("license_path"))
-            {
-                // No option for now
-            }
-            // And gonna add more config option with bool utile
-        }
-    }
 
     return 0;
+}
+
+template <typename T> void Config::ConfigData::pushSectionElement(T SectionData, int *number)
+{
+    if (typeid(T) != typeid(std::vector<std::string>))
+    {
+        CountDataFilling++;
+        Data.emplace_back();
+        Data.back(SectionData);
+    }
+
+    // If SectionData type is not vector<string> so it's just string
+    else
+    {
+        CountDataFilling++;
+        Data.emplace_back();
+        Data.back().first = SectionData;
+    }
 }

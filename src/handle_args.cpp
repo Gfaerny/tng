@@ -22,18 +22,18 @@ void handle_args(std::vector<std::string> &tng_args_vec)
             return;
         }
         // Config
-        else if (it == "-c" || "--config")
+        else if (it == "-c" || it == "--config")
         {
             // Is next argument exist ?
             if (tng_args_vec.at(iit).empty())
             {
                 std::printf("tng error : No config file selected\nuse --help or -h option's to see usage");
-                throw tng_error{.error_type = "EXPECT_ARGUMENT"};
+                throw tng_error{.error_type_o = error_type::c_no_config_file_select, .error_massage = {}};
             }
             else if (config_bool == YES)
             {
                 std::printf("tng error : You can't address cofing file more then one time per command");
-                throw tng_error{.error_type = "UNCORRECT_ARGUMENT_USE"};
+                throw tng_error{.error_type_o = error_type::c_cant_select_multi_conf, .error_massage = {}};
             }
             else
             {
@@ -47,17 +47,19 @@ void handle_args(std::vector<std::string> &tng_args_vec)
         // License
         else if (it == "-l" || it == "--license")
         {
+            // TODO: need to handle
+            // tng file.x -l
             if (tng_args_vec.at(iit).empty())
             {
                 std::printf("tng error : No license file selected\nuse --help or -h option's for see usage");
-                throw tng_error{.error_type = "EXPECT_ARGUMENT"};
+                throw tng_error{.error_type_o = error_type::arg_expected_argument, .error_massage = {}};
             }
             else if (license_bool == YES)
             {
                 std::printf("tng error : You can't address license file more then one time per command, but you  can "
                             "use .config file for setting license PATH's that can help you find you license when it is "
                             "not in this directory\n");
-                throw tng_error{.error_type = "UNCORRECT_ARGUMENT_USE"};
+                // throw tng_error{.error_type = ""};
             }
             else
             {
