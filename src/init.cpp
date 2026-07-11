@@ -20,14 +20,11 @@ void init(int arg, char *argv[])
     }
     catch (tng_error &e)
     {
-        if (e.error_type == "EXPECT_ARGUMENT")
+        if (e.error_type_o == error_type::arg_expected_argument)
         {
             return;
         }
-        else
-        {
-            return;
-        }
+        return;
     }
     return;
 }
