@@ -37,16 +37,14 @@ class Config
     // TODO: we have to use constructor for load config
 
     int load(const std::string &config_path);
+};
 
-    class ConfigData
-    {
-        ConfigData();
+struct ConfigData
+{
+    ConfigData();
 
-      public:
-        template <typename T> void pushSectionElement(T SectionData, int *number);
+    template <typename T> void pushSectionElement(T SectionData, int *number);
 
-      private:
-        int CountDataFilling{0};
-        std::vector<std::pair<std::vector<std::string>, std::vector<std::string>>> Data{{}, {}};
-    };
+    int CountDataFilling{0};
+    std::vector<std::pair<std::vector<std::string>, std::vector<std::string>>> Data{{}, {}};
 };

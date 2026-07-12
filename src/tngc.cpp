@@ -72,7 +72,7 @@ struct StringTool
     }
 };
 
-void read_set_tngc(Config::ConfigData &config_data)
+void read_set_tngc(ConfigData &config_data)
 {
 
     std::ifstream config_stream(config_path);
@@ -82,7 +82,7 @@ void read_set_tngc(Config::ConfigData &config_data)
         // throw tng_error{.error_massage}
     }
 
-    std::string line{""}, string{""};
+    std::string line{""}, section_field_string{""};
     State state = State::none;
 
     while (std::getline(config_stream, line))
@@ -150,12 +150,20 @@ void read_set_tngc(Config::ConfigData &config_data)
 
             if (state == State::reading_section_feild)
             {
-                if (c == ',')
+                if (c == '[')
                 {
-                    // config_data.push_back
+                    continue;
+                }
+                else if (c == ',')
+                {
+                    config_data.pushSectionElement(section_field_string, NULL);
+                }
+                else if (c == ']')
+                {
+                    config_data.pushSectionElement(section_field_string, NULL);
                 }
                 else
-                    string += c;
+                    section_field_string += c;
             }
         }
     }

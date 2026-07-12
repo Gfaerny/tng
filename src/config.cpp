@@ -32,7 +32,7 @@ int Config::load(const std::string &config_path)
     return 0;
 }
 
-template <typename T> void Config::ConfigData::pushSectionElement(T SectionData, int *number)
+template <typename T> void ConfigData::pushSectionElement(T SectionData, int *number)
 {
     if (typeid(T) != typeid(std::vector<std::string>))
     {
