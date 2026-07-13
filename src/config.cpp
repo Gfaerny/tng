@@ -1,7 +1,4 @@
 #include "../include/config.hpp"
-#include <cstddef>
-#include <memory_resource>
-#include <vector>
 
 #define RESET_TOKEN token = ""
 
@@ -37,15 +34,25 @@ template <typename T> void ConfigData::pushSectionElement(T SectionData, int *nu
     if (typeid(T) != typeid(std::vector<std::string>))
     {
         CountDataFilling++;
-        Data.emplace_back();
-        Data.back(SectionData);
+        FieldVec.push_back(SectionData);
     }
 
     // If SectionData type is not vector<string> so it's just string
     else
     {
-        CountDataFilling++;
-        Data.emplace_back();
-        Data.back().first = SectionData;
+        if (!FieldVec.empty())
+            FieldVec.back().push_back(SectionData);
+        else
+            FieldVec.push_back(SectionData);
     }
+}
+
+void ConfigData::pushVarableElement(std::string Variable)
+{
+    VariableVec.push_back(Variable);
+}
+
+void ConfigData::pushValueElement(std::string Value)
+{
+    ValueVec.push_back(Value);
 }

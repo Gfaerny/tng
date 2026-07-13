@@ -40,7 +40,7 @@ struct StringTool
         {
             if (r == after)
             {
-                result = "";
+                result.clear();
                 after_before = YES;
                 continue;
             }
@@ -82,41 +82,46 @@ void read_set_tngc(ConfigData &config_data)
         // throw tng_error{.error_massage}
     }
 
-    std::string line{""}, section_field_string{""};
-    State state = State::none;
+    std::string line{""}, section_field_string{""}, variable_string{""}, value_string{""};
+    State state = State::line_start;
 
     while (std::getline(config_stream, line))
     {
+        // Add new line charecter to line string for state declaration
+        line += '\n';
+
         if (line[0] == '#')
             continue;
 
         for (char c : line)
         {
+            // In this scope of if's statements we just set `State` of `state`
             if (c == '[')
             {
-                if (state == State::none)
+                if (state == State::line_start)
                 {
                     state = State::reading_section_feild;
-                    continue;
                 }
                 else
                 {
                     // TODO: thorw error
-                    continue;
                 }
+            }
+
+            else if (state == State::line_start && std::isalpha(c))
+            {
+                state = State::reading_variable;
             }
 
             else if (c == ']')
             {
                 if (state == State::reading_section_feild)
                 {
-                    state = State::reading_section_between_feild;
-                    continue;
+                    state = State::section_done;
                 }
                 else
                 {
                     // TODO: throw error
-                    continue;
                 }
             }
 
@@ -124,13 +129,13 @@ void read_set_tngc(ConfigData &config_data)
             {
                 if (state == State::reading_variable) // check variable
                 {
+                    config_data.pushVarableElement(variable_string);
+                    variable_string.clear();
                     state = State::reading_value;
-                    continue;
                 }
                 else
                 {
                     // TODO: throw error
-                    continue;
                 }
             }
 
@@ -138,16 +143,33 @@ void read_set_tngc(ConfigData &config_data)
             {
                 if (state == State::reading_value)
                 {
-                    state = State::reading_value_string;
-                    continue;
+                    state = State::reading_string_value;
                 }
                 else
                 {
                     // TODO: throw error
-                    continue;
                 }
             }
 
+            else if (c == '\n')
+            {
+                if (state == State::section_done)
+                {
+                    state = State::line_start;
+                }
+                else if (state == State::reading_value)
+                {
+                    config_data.pushValueElement(value_string);
+                    value_string.clear();
+                    state = State::line_start;
+                }
+                else
+                {
+                    // TODO: throw error
+                }
+            }
+
+            // Checking state and current charecter for it
             if (state == State::reading_section_feild)
             {
                 if (c == '[')
@@ -164,6 +186,16 @@ void read_set_tngc(ConfigData &config_data)
                 }
                 else
                     section_field_string += c;
+            }
+
+            else if (state == State::reading_variable)
+            {
+                variable_string += c;
+            }
+
+            else if (state == State::reading_value)
+            {
+                value_string += c;
             }
         }
     }

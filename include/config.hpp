@@ -41,10 +41,13 @@ class Config
 
 struct ConfigData
 {
-    ConfigData();
+    std::vector<std::vector<std::string>> FieldVec{{}};
+    std::vector<std::string> VariableVec{};
+    std::vector<std::string> ValueVec{};
 
     template <typename T> void pushSectionElement(T SectionData, int *number);
+    void pushVarableElement(std::string Variable);
+    void pushValueElement(std::string Value);
 
     int CountDataFilling{0};
-    std::vector<std::pair<std::vector<std::string>, std::vector<std::string>>> Data{{}, {}};
 };
