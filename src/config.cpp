@@ -43,30 +43,136 @@ std::string_view VariableValue::get_variable() const
     return variable.text;
 }
 
-template <typename T> void ConfigData::pushSectionElement(T SectionData, int *number)
+std::string_view VariableValue::get_value() const
 {
-    if (typeid(T) != typeid(std::vector<std::string>))
-    {
-        CountDataFilling++;
-        FieldVec.push_back(SectionData);
-    }
+    return value.text;
+}
 
-    // If SectionData type is not vector<string> so it's just string
+auto Section::push_field(std::string fieldStr, size_t line, size_t column)
+{
+    fields.push_back({fieldStr, {line, column}});
+}
+
+auto Section::push_var_val(std::string variableOrvalue, bool is_variable, size_t line, size_t column) -> void
+{
+    if (is_variable)
+    {
+        variable_value.emplace_back();
+        variable_value.back().variable.set_text(variableOrvalue);
+        variable_value.back().variable.set_metadata({.line = line, .column = column});
+    }
     else
     {
-        if (!FieldVec.empty())
-            FieldVec.back().push_back(SectionData);
-        else
-            FieldVec.push_back(SectionData);
+        if (variable_value.empty())
+        {
+            // throw error
+        }
+        variable_value.back().value.set_text(variableOrvalue);
+        variable_value.back().value.set_metadata({.line = line, .column = column});
     }
 }
 
-void ConfigData::pushVarableElement(std::string Variable)
+auto ConfigData::push_variable_value(const std::string variable_value, bool is_variable, size_t line,
+                                     const size_t column) -> void
 {
-    VariableVec.push_back(Variable);
+    this->section[this->current_index].push_var_val(variable_value, is_variable, line, column);
+}
+auto ConfigData::push_field(const std::string field, const size_t line, const size_t column) -> void
+{
+    this->section[current_index].push_field(field, line, column);
 }
 
-void ConfigData::pushValueElement(std::string Value)
+Config::Config()
 {
-    ValueVec.push_back(Value);
+    read_set_tngc(this->configData);
+}
+
+/*
+ * This function validate config from ConfigDataItemPerField
+ * and if everything in OK, them move valdated value to ConfigBuffer
+ */
+auto Config::config_section_validation(const Section &section) -> void
+{
+
+    // Switch between aviable variable
+    // If it was neccesry we add to configBuffer
+    for (auto &variable_value : section.variable_value)
+    {
+        const auto &variable = variable_value.get_variable();
+        const auto &value = variable_value.get_value();
+
+        if (variable == "comment")
+        {
+            if (value == "YES" || value == "true" || value == "yes")
+            {
+                configBuffer.comment = YES;
+            }
+            else if (value == "NO" || value == "false" || value == "no")
+            {
+                configBuffer.comment = NO;
+            }
+            else
+            {
+                // TODO: throw error
+            }
+        }
+        else if (variable == "comment_style")
+        {
+            if (value == "block")
+            {
+                configBuffer.comment_style = YES;
+            }
+            else if (value == "line")
+            {
+                configBuffer.comment_style = NO;
+            }
+            else
+            {
+                // TODO: throw error
+            }
+        }
+
+        else if (variable == "block_header")
+            configBuffer.block_header = value;
+
+        else if (variable == "block_line_prefix")
+            configBuffer.block_line_prefix = value;
+
+        else if (variable == "block_footer")
+            configBuffer.block_footer = value;
+
+        else if (variable == "license_path")
+            configBuffer.license_path = value;
+
+        else if (variable == "header_text")
+            configBuffer.header_text = value;
+
+        else if (variable == "file_introduce")
+            configBuffer.file_introduce = value;
+
+        else if (variable == "time_introduce")
+            configBuffer.time_introduce = value;
+
+        else if (variable == "license_introduce")
+            configBuffer.license_introduce = value;
+
+        else if (variable == "footer_text")
+            configBuffer.footer_text = value;
+        else
+        {
+            // throw error : variable not match with knowned variable
+        }
+    }
+}
+
+auto Config::write_config(std::fstream file_stream, const std::string file_name) -> void
+{
+    for (auto section : configData.section)
+    {
+        config_section_validation(section);
+
+        // TODO: START1: we have to write all variable in other word config options for know what exaclty-
+        // we need to write and what's thier order
+        // VERBOS_TS:
+    }
 }
