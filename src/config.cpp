@@ -1,32 +1,46 @@
 #include "../include/config.hpp"
+#include "../include/tngc.hpp"
 
-#define RESET_TOKEN token = ""
-
-/*
- * Config loader and config value setter
- */
-int Config::load(const std::string &config_path)
+auto TokenValue::set_text(std::string txt) -> void
 {
-    // We first try to open config file
-    // We want config file be hardcoded but also can changed by argument
-    // Thet hardcoded address = $HOME/.config/tng/tng.conf but also can changed by --config or -c option
-    // Check tng.conf config file
-    std::ifstream config_file(config_path);
-    if (!std::filesystem::exists(config_path))
-    {
-        std::printf("tng error : config file (%s), do not exist", config_path.c_str());
-        throw tng_error{.error_type_o = error_type::file_does_n_exist,
-                        .error_massage = tepic_error_massages::C_FILE_N_EXIST(config_path)};
-    }
-    // Print witch config now got loaded
-    std::printf("tng alert : config that used -> %s", config_path.c_str());
-    std::string line{""};
-    std::string seprated_word{""};
-    int line_number{0};
-    // Each line that provide one of extension file comment charecter defination got counted by this varable
-    int extension_file_spec_counter{0};
+    text = txt;
+}
 
-    return 0;
+auto TokenValue::set_metadata(MetaData md) -> void
+{
+    md.line = metadata.line;
+    md.column = metadata.column;
+}
+
+MetaData TokenValue::get_metadata() const
+{
+    return metadata;
+}
+
+auto VariableValue::push_metadata(size_t line, size_t column, bool is_variable) -> void
+{
+    if (is_variable)
+    {
+        variable.metadata.line = line;
+        variable.metadata.column = column;
+    }
+    else
+    {
+        value.metadata.line = line;
+        value.metadata.column = column;
+    }
+}
+MetaData VariableValue::get_metadata(bool is_variable) const
+{
+    if (is_variable)
+        return variable.get_metadata();
+    else
+        return value.get_metadata();
+}
+
+std::string_view VariableValue::get_variable() const
+{
+    return variable.text;
 }
 
 template <typename T> void ConfigData::pushSectionElement(T SectionData, int *number)
