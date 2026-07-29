@@ -105,8 +105,7 @@ Config::Config()
 }
 
 /*
- * This function validate config from ConfigDataItemPerField
- * and if everything in OK, them move valdated value to ConfigBuffer
+ * Fill ConfigSectoinBuffer with section data
  */
 auto Config::fill_config_buffer(const Section &section) -> void
 {

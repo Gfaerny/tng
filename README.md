@@ -73,7 +73,7 @@ For instance, if in the config we have:
 [txt]
 comment = YES
 line_prefix = "//"
-license_path = "/home/exampleUserName/license-file/"
+license_path = "/home/username/license-file/"
 ```
 
 and a license file like:
@@ -85,9 +85,7 @@ HERE IS LICENSE FILE
 then the resulting `file1.txt` / `file2.txt` could look like:
 
 ```txt
-COMMENT_ELEMENT_1
-HERE IS LICENSE FILE
-COMMENT_ELEMENT_2
+// HERE IS LICENSE FILE CONTENT
 ```
 
 (The exact content depends on the `header_text`, `footer_text`, comment style, and other options defined in the configuration.)
@@ -102,7 +100,7 @@ Below is a simplified version of the example you provided, with explanations.
 
 ### Configuration syntax rules
 
-- For boolean variables you can use `<YES>` or `<NO>` as aliases for `<true>` or `<false>`.
+- For boolean variables you can use `<YES>` or `<NO>` as aliases for `<true>` or `<false>` (btw: also you can now use `yes` or `no`).
 - Paths must be absolute. Relative (non-absolute) paths are not allowed.
 - Use triple quotes `"""` for multi-line string values.
 - Sections are declared using `[section_name]`.  
@@ -225,12 +223,18 @@ The process to implement these TODOs is:
    Example:
 
    ```cpp
-   enum class error_code
+   enum class error_type
    {
-     invalid_syntax,
-     unknown_extension,
-     invalid_config_path,
-     // ...
+       cannot_open_create_file,
+       expected_file_n_find,
+       file_does_n_exist,
+ 
+       arg_expected_argument,
+
+       c_array_dn_more,
+       c_more_less_symbol_EFNS,
+       c_no_config_file_select,
+       c_cant_select_multi_conf
    };
    ```
 
@@ -239,14 +243,14 @@ The process to implement these TODOs is:
    For example, instead of:
 
    ```cpp
-   // TODO: throw error
+   // TODO: throw error this config probelm. no file selected for config
    ```
 
    you might write:
 
    ```cpp
     throw tng_error{.error_type_o = error_type::c_no_config_file_select,
-      .error_massage = {}};
+      .error_massage = {"no file selected for config"}};
 
    ```
   
@@ -289,4 +293,3 @@ There is no any serious policy but it's very nice to use tng clang-format for yo
 
 `tng` is a under BSD license.
 Please refer to the `LICENSE` file in the repository for the exact license terms.
-
