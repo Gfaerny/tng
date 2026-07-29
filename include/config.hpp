@@ -9,6 +9,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <optional>
 #include <print>
 #include <pwd.h>
 #include <random>
@@ -78,25 +79,28 @@ struct Section
         -> void;
 };
 
-struct ConfigBuffer
+struct SectionConfigBuffer
 {
-    bool comment;
+    std::optional<bool> comment = std::nullopt;
+
     // `comment_style` vairable get filled in config file with `block` or `line` option
     // and in this buffer comment_style in order can be {YES} -> `block` and {NO} -> `line`
-    bool comment_style;
-    std::string_view line_prefix{};
-    std::string_view block_header{};
-    std::string_view block_line_prefix{};
-    std::string_view block_footer{};
-    std::string license_path{};
+    std::optional<bool> comment_style;
+    std::string_view line_prefix{""};
+    std::string_view block_header{""};
+    std::string_view block_line_prefix{""};
+    std::string_view block_footer{""};
+    std::string license_path{""};
 
     // Layout
     // TODO: check if don't need use _view sufrix for layout value
-    std::string header_text{};
-    std::string file_introduce{};
-    std::string time_introduce{};
-    std::string license_introduce{};
-    std::string footer_text{};
+    std::string header_text{""};
+    std::string file_introduce{""};
+    std::string time_introduce{""};
+    std::string license_introduce{""};
+    std::string footer_text{""};
+
+    auto reset() -> void;
 };
 
 struct ConfigData
@@ -104,7 +108,7 @@ struct ConfigData
     int current_index{0};
     std::vector<Section> section{};
 
-    auto section_validation(ConfigBuffer configBuffer) -> void;
+    auto section_validation(SectionConfigBuffer configBuffer) -> void;
     auto push_variable_value(const std::string variable_value, bool is_variable, size_t line, size_t column) -> void;
     auto push_field(const std::string field, const size_t line, const size_t column) -> void;
 };
@@ -113,10 +117,11 @@ class Config
 {
   public:
     ConfigData configData;
-    ConfigBuffer configBuffer;
+    SectionConfigBuffer configBuffer;
     Config();
 
-    auto config_section_validation(const Section &section) -> void;
+    auto fill_config_buffer(const Section &section) -> void;
+    auto validation_config_buffer() -> void;
     auto write_config(std::fstream fs, const std::string file_name) -> void;
 
   protected:

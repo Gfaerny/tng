@@ -1,5 +1,6 @@
 #include "../include/config.hpp"
 #include "../include/tngc.hpp"
+#include <optional>
 
 auto TokenValue::set_text(std::string txt) -> void
 {
@@ -72,6 +73,22 @@ auto Section::push_var_val(std::string variableOrvalue, bool is_variable, size_t
     }
 }
 
+auto SectionConfigBuffer::reset() -> void
+{
+    this->comment = std::nullopt;
+    this->comment_style = std::nullopt;
+    this->line_prefix = "";
+    this->block_header = "";
+    this->block_line_prefix = "";
+    this->block_footer = "";
+    this->license_path = "";
+    this->header_text = "";
+    this->file_introduce = "";
+    this->time_introduce = "";
+    this->license_introduce = "";
+    this->footer_text = "";
+}
+
 auto ConfigData::push_variable_value(const std::string variable_value, bool is_variable, size_t line,
                                      const size_t column) -> void
 {
@@ -91,7 +108,7 @@ Config::Config()
  * This function validate config from ConfigDataItemPerField
  * and if everything in OK, them move valdated value to ConfigBuffer
  */
-auto Config::config_section_validation(const Section &section) -> void
+auto Config::fill_config_buffer(const Section &section) -> void
 {
 
     // Switch between aviable variable
@@ -165,14 +182,53 @@ auto Config::config_section_validation(const Section &section) -> void
     }
 }
 
+auto Config::validation_config_buffer() -> void
+{
+    if (configBuffer.comment == YES)
+    {
+        if (configBuffer.comment_style == YES)
+        {
+            if (configBuffer.block_header == "")
+            {
+                // TODO: throw error. write all block element
+            }
+            if (configBuffer.block_footer == "")
+            {
+                // TODO: throw error. write all block element
+            }
+            if (configBuffer.block_line_prefix == "")
+            {
+                // TODO: throw error. write all block element
+            }
+        }
+        if (configBuffer.comment_style == NO)
+        {
+            if (configBuffer.line_prefix == "")
+            {
+                // TODO: throw error. write line prefix if you want to write your text in comment
+            }
+        }
+    }
+    else if (configBuffer.comment == NO)
+    {
+        if (configBuffer.comment_style == YES)
+        {
+            // warning
+        }
+    }
+}
 auto Config::write_config(std::fstream file_stream, const std::string file_name) -> void
 {
     for (auto section : configData.section)
     {
-        config_section_validation(section);
+        fill_config_buffer(section);
+        validation_config_buffer();
 
         // TODO: START1: we have to write all variable in other word config options for know what exaclty-
         // we need to write and what's thier order
         // VERBOS_TS:
+
+        // Ready section config buffer for another section if no error got showed
+        configBuffer.reset();
     }
 }
