@@ -9,8 +9,6 @@
 `tng` is currently under heavy development.  
 The public API, configuration format, and internal architecture may change between versions.
 
-Despite being a work in progress, the project is already usable for generating boilerplate text for source files based on configuration rules.
-
 ---
 
 ## About tng
@@ -247,14 +245,11 @@ The process to implement these TODOs is:
    you might write:
 
    ```cpp
-   throw tng::error(
-     tng::error_code::invalid_config_path,
-     "Configuration path must be an absolute path."
-   );
+    throw tng_error{.error_type_o = error_type::c_no_config_file_select,
+      .error_massage = {}};
+
    ```
-
-   Adjust the namespace, error type, and constructor according to the actual API provided in `error.hpp`.
-
+  
 ---
 
 ## Contributing
@@ -287,13 +282,7 @@ Examples of current TODO categories:
 
 ### Coding guidelines
 
-- All C++ code should follow GNU coding standards and compile cleanly with strict warnings enabled.
-- Keep the code style consistent with the existing project (namespaces, brace style, naming conventions).
-- Before submitting a patch:
-  - run the test suite (if available),
-  - ensure the code builds without new warnings,
-  - update documentation if your change affects user-visible behavior.
-
+There is no any serious policy but it's very nice to use tng clang-format for your workspace
 ---
 
 ## License
