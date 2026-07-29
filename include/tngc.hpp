@@ -1,5 +1,4 @@
 #pragma once
-#include <fstream>
 
 #include "config.hpp"
 #include "macro.h"
@@ -13,6 +12,9 @@ enum class State
     reading_variable,
     reading_value,
     reading_string_value,
+    reading_string_multi_line_value,
+    value_string_done,
+    value_string_multi_line_done,
     value_done,
     section_done
 };
