@@ -9,18 +9,14 @@ enum class error_type
     expected_file_n_find,
     file_does_n_exist,
 
-    // CLI argument handling
     arg_expected_argument,
 
-    // Config error tpyes
     c_array_dn_more,
     c_more_less_symbol_EFNS,
     c_no_config_file_select,
     c_cant_select_multi_conf
 };
 
-// tepic_error_massage struct try to help us for better error and bug handling
-// for both user and developer
 class tepic_error_massages
 {
   public:
@@ -28,7 +24,7 @@ class tepic_error_massages
     {
         return "Your config file (" + arg + ") does not find.";
     }
-    // Error when
+
     inline static std::string C_OPENING_FILE(const std::string &arg)
     {
         return "Config file can not be opened.\n"
@@ -49,7 +45,5 @@ class tepic_error_massages
 struct tng_error
 {
     error_type error_type_o;
-    // const std::string error_type{} this string object must need for config file errors
     const std::string error_massage;
-    // It's possible to add file class object for closing resource of file's
 };

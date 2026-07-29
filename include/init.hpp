@@ -7,4 +7,5 @@
 
 #include "error.hpp"
 #include "handle_args.hpp"
-void init(int arg, char *argv[]);
+
+auto init(int arg, char *argv[]) -> void;
