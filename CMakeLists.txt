@@ -5,7 +5,9 @@ project(tng VERSION 1.0.0
                         LANGUAGES CXX
                         )
 
-add_executable(tng src/tng_make_file.cpp src/handle_args.cpp src/init.cpp src/main.cpp src/config.cpp)
+add_executable(tng src/tng_make_file.cpp src/handle_args.cpp src/init.cpp
+               src/main.cpp src/config.cpp src/tngc.cpp src/string_tool.cpp)
+
 target_compile_options(tng PRIVATE
   -Wall
   -Wextra
