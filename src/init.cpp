@@ -1,11 +1,8 @@
 #include "../include/init.hpp"
 
-/**
- * Initialize tng
- */
-void init(int arg, char *argv[])
+auto init(int arg, char *argv[]) -> void
 {
-    // Getting arguments and write it to tng_args_vec
+
     std::vector<std::string> tng_args_vec;
     for (int i = 0; i < arg; ++i)
     {
@@ -13,7 +10,6 @@ void init(int arg, char *argv[])
         tng_args_vec.push_back(argv_string);
     }
 
-    // Pass tng_args_vec to handle_args function and handle exception
     try
     {
         handle_args(tng_args_vec);
