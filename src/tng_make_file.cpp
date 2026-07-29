@@ -1,55 +1,36 @@
 #include "../include/tng_make_file.hpp"
-/**
- * Return basic_string of file name extension string
- * like: file.cpp -> "cpp" , file.extension -> "extension" , file_no_extension
- * -> file_no_extension
- */
-std::basic_string<char> extension_type(const std::string &filename)
-{
-    std::basic_string<char> file_extension_name = {""};
-    for (char it : filename)
-    {
-        if (it != '.')
-        {
-            file_extension_name += it;
-        }
-        else if (it == '.')
-        {
-            if (file_extension_name != "")
-                file_extension_name = "";
-        }
-    }
-    return file_extension_name;
-}
 
 /**
- * Creat normal file using name_string vector list
+ * Creat normal file using name_string auto list -> vector
  * This function exist to creat empty file and may used by other write_file*
  * functoin's
  */
-void write_file(std::vector<std::string> &file_name)
+auto tng_write_file(const std::vector<std::string> &file_names) -> void
 {
-    for (std::string r : file_name)
-    {
-        std::ofstream files;
+    Config config;
 
-        files.open(r);
-        if (!files.is_open())
+    for (auto file : file_names)
+    {
+        std::fstream file_stream;
+
+        file_stream.open(file, std::ios::out | std::ios::in);
+        if (!file_stream.is_open())
         {
             std::printf("tng error : File %s can't get created.\n check "
                         "directory or user permisions",
-                        r.c_str());
+                        file.c_str());
             throw tng_error{.error_type_o = error_type::cannot_open_create_file,
-                            // TODO: change error_massage field from CREAT to CREATE
                             .error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
         }
-        files.close();
+
+        config.write_config(std::move(file_stream), file);
+        file_stream.close();
     }
     return;
 }
 
 /**
- * Write license file
+ * Write auto file -> license
  */
 void write_file_license(const std::vector<std::string> &filename, const std::string &license_filename)
 {
@@ -74,15 +55,12 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
                         .error_massage = {"CANNOT_OPEN_CREAT_FILE"}};
     }
 
-    write_file(filename);
     std::filebuf *license_stream_buffer = license_stream_obj.rdbuf();
     std::ofstream ofr;
 
     for (std::string r : filename)
     {
         ofr.open(r);
-        // Error if input file didn't got created or we have issue in opening
-        // input file
         if (!ofr.is_open())
         {
             // TODO: need to remove prinf and use tng_error .error_massage
@@ -101,102 +79,5 @@ void write_file_license(const std::vector<std::string> &filename, const std::str
             license_filebuf_char_intr = license_stream_buffer->sbumpc();
         }
     }
-    return;
-}
-/**
- * Write comment to file from config
- */
-void write_file_config(const std::vector<std::string> &vector_filename, const std::string *config_filename,
-                       const std::string &extension_filename)
-{
-    // Exception system
-    try
-    {
-        config Config;
-        Config.load(config_path);
-        for (auto r : vector_filename)
-        {
-            // We have file_name that would be created so ask config what whe have to do for their devided by
-            // extension_file name
-            for (auto file_name : vector_filename)
-            {
-                for (auto efcs : Config.extension_files_config_spec)
-                {
-                    for (auto efcs_first : efcs.first)
-                    {
-                        // If file extension type is in this efcs extension_database ?
-                        if (efcs_first == extension_type(file_name))
-                        {
-                            // For now tng extension file base data just keep one symbol or 4 symbol
-                            // if: one symbol got configed, that one stands for one-liner comment
-                            // if: there is 3 -> one_liner_symbol , multi_liner_starter , multi_line_ender
-                            // if: ther is 4 _  one_liner_symbol , multi_liner_starter, between_lines , multi_line_ender
-                            if (efcs.second.size() != 1 && efcs.second.size() != 3 && efcs.second.size() != 4)
-                            {
-                                throw tng_error{};
-                            }
-                            for (auto efcs_second : efcs.second)
-                            {
-                                if (Config.use_symbol_between_multi_line == YES)
-                                {
-                                    if (efcs_second.size() > !3) /*TODO*/
-                                    {
-                                        throw tng_error{.error_type_o = error_type::c_more_less_symbol_EFNS,
-                                                        .error_massage = "NO THING FOR NOW"};
-                                    }
-                                }
-                                switch (efcs.second.size())
-                                {
-                                case (1):
-                                    break;
-                                case (3):
-                                    break;
-                                case (4):
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (Config.use_newline_for_multi_line == YES)
-            {
-            }
-            if (Config.add_text == YES)
-            {
-            }
-        }
-    }
-    catch (tng_error &e)
-    {
-    }
-}
-/**
- * Main creating file's function
- * We use this function for call all tng_make_file function effencitevly
- */
-void tng_make_file(const std::vector<std::string> &arguments, const std::string *config_filename,
-                   const std::string *license_filename)
-{
-    std::ofstream files;
-    if (config_filename == NULL)
-    {
-        if (license_filename == NULL)
-        {
-            write_file(arguments);
-            return;
-        }
-
-        else
-        {
-            write_file(arguments);
-            write_file_license(arguments, *license_filename);
-            return;
-        }
-    }
-
-    write_file(arguments);
-    write_file_license(arguments, *license_filename);
-
     return;
 }
