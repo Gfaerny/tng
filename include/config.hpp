@@ -1,27 +1,11 @@
 #pragma once
 
-#include <algorithm>
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <filesystem>
 #include <fstream>
-#include <optional>
-#include <print>
 #include <pwd.h>
-#include <random>
-#include <regex>
-#include <string>
-#include <string_view>
 #include <unistd.h>
 #include <vector>
 
-#include "error.hpp"
-#include "macro.h"
-#include "string_tools.hpp"
+#include "buffer.hpp"
 
 passwd *pw = getpwuid(getuid());
 char *c_style_home_dir = pw->pw_dir;
@@ -42,7 +26,8 @@ struct TokenValue
     auto set_text(std::string txt) -> void;
     auto set_metadata(MetaData md) -> void;
 
-    MetaData get_metadata() const;
+    auto get_metadata() const -> MetaData;
+    auto get_value() const -> std::string;
 };
 
 struct VariableValue
@@ -79,50 +64,29 @@ struct Section
         -> void;
 };
 
-struct SectionConfigBuffer
-{
-    std::optional<bool> comment = std::nullopt;
-
-    // `comment_style` vairable get filled in config file with `block` or `line` option
-    // and in this buffer comment_style in order can be {YES} -> `block` and {NO} -> `line`
-    std::optional<bool> comment_style;
-    std::string_view line_prefix{""};
-    std::string_view block_header{""};
-    std::string_view block_line_prefix{""};
-    std::string_view block_footer{""};
-    std::string license_path{""};
-
-    // Layout
-    // TODO: check if don't need use _view sufrix for layout value
-    std::string header_text{""};
-    std::string file_introduce{""};
-    std::string time_introduce{""};
-    std::string license_introduce{""};
-    std::string footer_text{""};
-
-    auto reset() -> void;
-};
-
 struct ConfigData
 {
     int current_index{0};
-    std::vector<Section> section{};
+    std::vector<Section> sections{};
+    std::vector<SectionBuffer> sectionsBufferStorge{};
 
-    auto section_validation(SectionConfigBuffer configBuffer) -> void;
+    auto section_validation(SectionBuffer configBuffer) -> void;
     auto push_variable_value(const std::string variable_value, bool is_variable, size_t line, size_t column) -> void;
-    auto push_field(const std::string field, const size_t line, const size_t column) -> void;
+    auto push_field(const std::string &field, const size_t &line, const size_t &column) -> void;
 };
 
 class Config
 {
   public:
     ConfigData configData;
-    SectionConfigBuffer configBuffer;
+    SectionBuffer configBuffer;
+    std::vector<SectionBuffer> readed_config_section_buffer;
+
     Config();
 
     auto fill_config_buffer(const Section &section) -> void;
     auto validation_config_buffer() -> void;
-    auto write_config(std::fstream fs, const std::string file_name) -> void;
+    auto write_config(const std::fstream &file_stream, const std::string_view &file_name) -> void;
 
   protected:
     // All values
