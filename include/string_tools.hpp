@@ -1,8 +1,7 @@
 #pragma once
 
+#include <optional>
 #include <string>
-
-#include "macro.h"
 
 namespace StringTools
 {
@@ -13,4 +12,6 @@ std::string clear_char_space(std::string &string);
 std::string after_until(const std::string &string, const char &after, const char &until);
 
 template <typename T> T after_eqaul_value(std::string &line);
+
+std::optional<int> string_line_len(const std::string &string);
 }; // namespace StringTools

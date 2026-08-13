@@ -1,17 +1,7 @@
 #pragma once
 
-#include <cstdlib>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <print>
-#include <pwd.h>
-#include <string>
-#include <sys/types.h>
-#include <unistd.h>
 #include <vector>
 
-#include "config.hpp"
 #include "error.hpp"
 
 void write_file(std::vector<std::string> &file_name);

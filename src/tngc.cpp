@@ -1,5 +1,8 @@
-#include "../include/tngc.hpp"
 #include <cstdlib>
+
+#include "config.hpp"
+#include "macro.h"
+#include "tngc.hpp"
 
 auto read_set_tngc(ConfigData config_data) -> void
 {
@@ -14,6 +17,7 @@ auto read_set_tngc(ConfigData config_data) -> void
     }
 
     std::string line{""}, section_field_string{""}, variable_string{""}, value_string{""}, valueStr_string{""},
+        // valueStrMl value string for multi line parameter
         valueStrMl_string{""};
     State state = State::line_start;
 
@@ -79,9 +83,6 @@ auto read_set_tngc(ConfigData config_data) -> void
                 {
                     config_data.push_variable_value(std::move(variable_string), YES, line_count, column_count);
                     state = State::reading_value;
-                    // START2: this is right code but i have to find out
-                    // I have to set this push rule with new section object anyware
-                    // config_data.sections.pushVariableOrValue(variable_string, 0);
                 }
                 else
                 {
@@ -163,12 +164,12 @@ auto read_set_tngc(ConfigData config_data) -> void
                 }
                 else if (c == ',')
                 {
-                    config_data.pushSectionElement(std::move(section_field_string));
+                    config_data.push_field(section_field_string, line_count, column_count);
                 }
                 else if (c == ']')
                 {
-                    config_data.pushSectionElement(std::move(section_field_string));
-                    config_data.config_field_section_filled_count++;
+                    config_data.push_field(section_field_string, line_count, column_count);
+                    ++config_data.current_index;
                 }
                 else
                     section_field_string += c;
@@ -196,12 +197,12 @@ auto read_set_tngc(ConfigData config_data) -> void
 
             else if (state == State::value_done)
             {
-                config_data.pushValueElement(value_string);
+                config_data.push_variable_value(value_string, NO, line_count, column_count);
             }
 
             else if (state == State::value_string_done)
             {
-                config_data.pushValueElement(valueStrMl_string);
+                config_data.push_variable_value(valueStrMl_string, NO, line_count, column_count);
             }
         }
     }

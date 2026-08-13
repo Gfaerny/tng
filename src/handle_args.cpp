@@ -9,7 +9,7 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
 {
     for (auto it : tng_args_vec)
     {
-        iit++;
+        ++iit;
         // Help
         if (it == "-h" || it == "--help")
         {

@@ -1,6 +1,13 @@
-#include "../include/config.hpp"
-#include "../include/tngc.hpp"
+#include <algorithm>
+#include <fstream>
 #include <optional>
+#include <vector>
+
+#include "buffer.hpp"
+#include "config.hpp"
+#include "macro.h"
+#include "string_tools.hpp"
+#include "tngc.hpp"
 
 auto TokenValue::set_text(std::string txt) -> void
 {
@@ -13,7 +20,12 @@ auto TokenValue::set_metadata(MetaData md) -> void
     md.column = metadata.column;
 }
 
-MetaData TokenValue::get_metadata() const
+auto TokenValue::get_value() const -> std::string
+{
+    return this->text;
+}
+
+auto TokenValue::get_metadata() const -> MetaData
 {
     return metadata;
 }
@@ -73,30 +85,14 @@ auto Section::push_var_val(std::string variableOrvalue, bool is_variable, size_t
     }
 }
 
-auto SectionConfigBuffer::reset() -> void
-{
-    this->comment = std::nullopt;
-    this->comment_style = std::nullopt;
-    this->line_prefix = "";
-    this->block_header = "";
-    this->block_line_prefix = "";
-    this->block_footer = "";
-    this->license_path = "";
-    this->header_text = "";
-    this->file_introduce = "";
-    this->time_introduce = "";
-    this->license_introduce = "";
-    this->footer_text = "";
-}
-
 auto ConfigData::push_variable_value(const std::string variable_value, bool is_variable, size_t line,
                                      const size_t column) -> void
 {
-    this->section[this->current_index].push_var_val(variable_value, is_variable, line, column);
+    this->sections[this->current_index].push_var_val(variable_value, is_variable, line, column);
 }
-auto ConfigData::push_field(const std::string field, const size_t line, const size_t column) -> void
+auto ConfigData::push_field(const std::string &field, const size_t &line, const size_t &column) -> void
 {
-    this->section[current_index].push_field(field, line, column);
+    this->sections[current_index].push_field(field, line, column);
 }
 
 Config::Config()
@@ -179,6 +175,11 @@ auto Config::fill_config_buffer(const Section &section) -> void
             // throw error : variable not match with knowned variable
         }
     }
+
+    for (auto field : section.fields)
+    {
+        configBuffer.fields.push_back(field.get_value());
+    }
 }
 
 auto Config::validation_config_buffer() -> void
@@ -216,18 +217,32 @@ auto Config::validation_config_buffer() -> void
         }
     }
 }
-auto Config::write_config(std::fstream file_stream, const std::string file_name) -> void
+
+auto Config::write_config(const std::fstream &file_stream, const std::string_view &file_name) -> void
 {
-    for (auto section : configData.section)
+    // TODO: we have to use this loop when if readed config section buffer vector is empty
+    if (!configData.sectionsBufferStorge.empty())
     {
-        fill_config_buffer(section);
-        validation_config_buffer();
+        for (auto buffer : configData.sectionsBufferStorge)
+        {
+        }
+    }
+    else
+    {
+        for (auto section : configData.section)
+        {
+            std::ranges::sort(section.fields, {}, &TokenValue::text);
+            const bool found = std::ranges::binary_search(section.fields, file_name, {}, &TokenValue::text);
 
-        // TODO: START1: we have to write all variable in other word config options for know what exaclty-
-        // we need to write and what's thier order
-        // VERBOS_TS:
+            if (found)
+            {
+                fill_config_buffer(section);
+                validation_config_buffer();
 
-        // Ready section config buffer for another section if no error got showed
-        configBuffer.reset();
+                configBuffer.reset();
+            }
+
+            // VERBOS_TS:
+        }
     }
 }

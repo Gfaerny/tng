@@ -1,7 +1,6 @@
 #pragma once
 
 #include "config.hpp"
-#include "macro.h"
 
 enum class State
 {

@@ -1,4 +1,7 @@
-#include "../include/string_tools.hpp"
+#include <optional>
+
+#include "macro.h"
+#include "string_tools.hpp"
 
 /**
  * Return basic_string of file name auto string -> extension
@@ -92,4 +95,18 @@ template <typename T> T StringTools::after_eqaul_value(std::string &line)
         //     after_until(line, after, const char &until)
         // }
     }
+}
+
+std::optional<int> string_line_len(const std::string &string)
+{
+    int line{};
+
+    for (const auto &r : string)
+        if (r == '\n')
+            line++;
+
+    if (line == 0)
+        return std::nullopt;
+    else
+        return line;
 }
