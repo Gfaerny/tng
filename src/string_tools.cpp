@@ -1,7 +1,8 @@
 #include <optional>
 
-#include "macro.h"
 #include "string_tools.hpp"
+
+#include "macro.h"
 
 /**
  * Return basic_string of file name auto string -> extension
@@ -12,13 +13,13 @@ std::basic_string<char> StringTools::extension_type(const std::string &filename)
 {
     // TODO: check for typo here!!
     std::basic_string<char> file_extension_name = {""};
-    for (char it : filename)
+    for (char c : filename)
     {
-        if (it != '.')
+        if (c != '.')
         {
-            file_extension_name += it;
+            file_extension_name += c;
         }
-        else if (it == '.')
+        else if (c == '.')
         {
             if (file_extension_name != "")
                 file_extension_name = "";
@@ -109,4 +110,12 @@ std::optional<int> string_line_len(const std::string &string)
         return std::nullopt;
     else
         return line;
+}
+
+auto StringTools::string_to_int(const std::string &string) -> int
+{
+    size_t pos;
+    int number_value{std::stoi(std::string(string), &pos)};
+    // TODO: manage expected error
+    return number_value;
 }
