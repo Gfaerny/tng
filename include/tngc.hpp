@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TNGC_H
+#define TNGC_H
 
 #include "config.hpp"
 
@@ -19,3 +20,5 @@ enum class State
 };
 
 void read_set_tngc(ConfigData &config_data);
+
+#endif
