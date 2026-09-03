@@ -4,7 +4,8 @@
 *.txt
 .cache/*
 compile_commands.json
-/r/
+temp*
+temp*/
 *.patch
 Makefile
 .taskwarrior/
@@ -16,5 +17,5 @@ cmake_install.cmake
 .o
 .a
 .cach/
-
+tng
 .aider*
