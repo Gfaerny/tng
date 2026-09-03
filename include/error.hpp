@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ERROR_H
+#define ERROR_H
 
 #include <cstdio>
 #include <string>
@@ -47,3 +48,5 @@ struct tng_error
     error_type error_type_o;
     const std::string error_massage;
 };
+
+#endif
