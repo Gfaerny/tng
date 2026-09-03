@@ -5,9 +5,22 @@ project(tng VERSION 1.0.0
                         LANGUAGES CXX
                         )
 
-add_executable(tng src/tng_make_file.cpp src/handle_args.cpp src/init.cpp
-               src/main.cpp src/config.cpp src/tngc.cpp src/string_tools.cpp
-               src/operator.cpp src/buffer.cpp)
+add_executable(tng)
+
+target_sources(tng
+    PRIVATE
+        src/init.cpp
+        src/main.cpp
+        src/tngc.cpp
+        src/buffer.cpp
+        src/config.cpp
+        src/search.cpp
+        src/section.cpp
+        src/operator.cpp
+        src/handle_args.cpp
+        src/string_tools.cpp
+        src/tng_make_file.cpp
+)
 
 target_include_directories(tng
     PRIVATE
@@ -15,7 +28,10 @@ target_include_directories(tng
 )
 
 target_compile_options(tng PRIVATE
+  -g3
+  -O0
   -Wall
+  -Wunused-but-set-parameter
   -Wextra
   -O2
   -std=c++20
