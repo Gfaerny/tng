@@ -1,13 +1,11 @@
-#pragma once
+#ifndef TNG_MAKE_FILE_H
+#define TNG_MAKE_FILE_H
 
+#include "macro.h"
+
+#include <string>
 #include <vector>
 
-#include "error.hpp"
+auto tng_write_file(const std::vector<fs::path> &file_names) -> void;
 
-void write_file(std::vector<std::string> &file_name);
-
-void write_file_license(const std::vector<std::string> &filename, std::string *license_filename);
-
-void write_file_config(const std::vector<std::string> &vector_filename, const std::string *config,
-                       const std::string extention_filename);
-void tng_make_file(const std::vector<std::string> &arguments, const std::string *config_filename);
+#endif
