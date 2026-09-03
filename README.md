@@ -113,55 +113,61 @@ Below is a simplified version of the example you provided, with explanations.
 ### Example: per-extension section for C/C++-like files
 
 ```ini
-[cpp, c, cc, hpp, h]
+		[cpp, c, cc, hpp, h]
+
 
 ####################################
 ############## Policy ##############
-####################################
 
-# Use comments for all tng-generated text.
+
+# First we have buffer setup.
+#   define buffer writted with comment 
+#	define comment element's
+#   define license path
+#   
+# Use comment for all tng generated text for files
 comment = YES
+comment_style = block # block or line
+overwrite_existing_file = YES 
 
-# Comment style: "block" or "line"
-comment_style = block
-
-# Line comment prefix (for line or mixed styles)
+# Each element of comment for multi-line comment or liner comment
+# In this example we have
+#
+#	// Line
+#
+#	/*
+#	 * Non-liner or Block comment
+#	 */
+# 
 line_prefix = "//"
-
-# Multi-line / block comment syntax
-block_header      = "/*"
+block_header = "/*"
 block_line_prefix = " * "
-block_footer      = " */"
+block_footer = " */"
 
-# License path (absolute path only)
+# Include license file in project
+include_license = YES
+
+# Locate license path
 license_path = "/home/exampleUserName/license-file/"
-# TODO: use PWD here
+# TODO: use PWD in here
 # -> license_path = "PWD/license/"
 
-# If tng has already written the generated buffer once, do not write it again
-# when this is set to YES.
-do_not_duplicate_buffer = NO
+# Pre configed
+include_license_before_header = YES
+space_between_header_footer = 4
+
 
 ####################################
 ############## Layout ##############
-####################################
+
 
 header_text = """
-GNU Based project by : Ilia Abolghasemy (aka: gfaerny, Iliya Abolghasemi)
-tng is under GNU license
+Project by : Ilia Abolghasemy (aka: gfaerny, Iliya Abolghasemi)
 """
 
-file_introduce   = "File:"
-time_introduce   = "Time:"
-license_introduce = "License : MIT"
-
-footer_text = """
+footer_text="""
 Copyright by Ilia Abolghasemy
 """
-# TODO: Implement a modification analyzer:
-#  - detect last config update time
-#  - compare with file modification time
-#  - decide whether the generated buffer should be rewritten or not.
 ```
 
 ---
