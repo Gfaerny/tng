@@ -1,4 +1,4 @@
-#include "../include/init.hpp"
+#include "init.hpp"
 
 auto init(int arg, char *argv[]) -> void
 {
