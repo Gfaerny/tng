@@ -1,89 +1,16 @@
+#include "config.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <optional>
+#include <string>
 #include <vector>
 
 #include "buffer.hpp"
-#include "config.hpp"
 #include "macro.h"
+#include "section.hpp"
 #include "string_tools.hpp"
 #include "tngc.hpp"
-
-auto TokenValue::set_text(std::string txt) -> void
-{
-    text = txt;
-}
-
-auto TokenValue::set_metadata(MetaData md) -> void
-{
-    md.line = metadata.line;
-    md.column = metadata.column;
-}
-
-auto TokenValue::get_value() const -> std::string
-{
-    return this->text;
-}
-
-auto TokenValue::get_metadata() const -> MetaData
-{
-    return metadata;
-}
-
-auto VariableValue::push_metadata(size_t line, size_t column, bool is_variable) -> void
-{
-    if (is_variable)
-    {
-        variable.metadata.line = line;
-        variable.metadata.column = column;
-    }
-    else
-    {
-        value.metadata.line = line;
-        value.metadata.column = column;
-    }
-}
-MetaData VariableValue::get_metadata(bool is_variable) const
-{
-    if (is_variable)
-        return variable.get_metadata();
-    else
-        return value.get_metadata();
-}
-
-std::string_view VariableValue::get_variable() const
-{
-    return variable.text;
-}
-
-std::string_view VariableValue::get_value() const
-{
-    return value.text;
-}
-
-auto Section::push_field(std::string fieldStr, size_t line, size_t column)
-{
-    fields.push_back({fieldStr, {line, column}});
-}
-
-auto Section::push_var_val(std::string variableOrvalue, bool is_variable, size_t line, size_t column) -> void
-{
-    if (is_variable)
-    {
-        variable_value.emplace_back();
-        variable_value.back().variable.set_text(variableOrvalue);
-        variable_value.back().variable.set_metadata({.line = line, .column = column});
-    }
-    else
-    {
-        if (variable_value.empty())
-        {
-            // throw error
-        }
-        variable_value.back().value.set_text(variableOrvalue);
-        variable_value.back().value.set_metadata({.line = line, .column = column});
-    }
-}
 
 auto ConfigData::push_variable_value(const std::string variable_value, bool is_variable, size_t line,
                                      const size_t column) -> void
@@ -105,7 +32,6 @@ Config::Config()
  */
 auto Config::fill_config_buffer(const Section &section) -> void
 {
-
     // Switch between aviable variable
     // If it was neccesry we add to configBuffer
     for (auto &variable_value : section.variable_value)
@@ -113,6 +39,7 @@ auto Config::fill_config_buffer(const Section &section) -> void
         const auto &variable = variable_value.get_variable();
         const auto &value = variable_value.get_value();
 
+        // Bool type variables
         if (variable == "comment")
         {
             if (value == "YES" || value == "true" || value == "yes")
@@ -143,7 +70,53 @@ auto Config::fill_config_buffer(const Section &section) -> void
                 // TODO: throw error
             }
         }
+        else if (variable == "include_license_before_header")
+        {
+            if (value == "YES" || value == "true" || value == "yes")
+            {
+                configBuffer.include_license_before_header = YES;
+            }
+            else if (value == "NO" || value == "false" || value == "no")
+            {
+                configBuffer.include_license_before_header = NO;
+            }
+            else
+            {
+                // TODO: throw error
+            }
+        }
+        else if (variable == "overwrite_existing_file")
+        {
+            if (value == "YES" || value == "true" || value == "yes")
+            {
+                configBuffer.overwrite_existing_file = YES;
+            }
+            else if (value == "NO" || value == "false" || value == "no")
+            {
+                configBuffer.overwrite_existing_file = NO;
+            }
+            else
+            {
+                // TODO: throw error
+            }
+        }
+        else if (variable == "include_license")
+        {
+            if (value == "YES" || value == "true" || value == "yes")
+            {
+                configBuffer.include_license = YES;
+            }
+            else if (value == "NO" || value == "false" || value == "no")
+            {
+                configBuffer.include_license = NO;
+            }
+            else
+            {
+                // TODO: throw error
+            }
+        }
 
+        // String type variables
         else if (variable == "block_header")
             configBuffer.block_header = value;
 
@@ -157,22 +130,21 @@ auto Config::fill_config_buffer(const Section &section) -> void
             configBuffer.license_path = value;
 
         else if (variable == "header_text")
-            configBuffer.header_text = value;
-
-        else if (variable == "file_introduce")
-            configBuffer.file_introduce = value;
-
-        else if (variable == "time_introduce")
-            configBuffer.time_introduce = value;
-
-        else if (variable == "license_introduce")
-            configBuffer.license_introduce = value;
+            configBuffer.header_texts.push_back(value);
 
         else if (variable == "footer_text")
-            configBuffer.footer_text = value;
+            configBuffer.footer_texts.push_back(value);
+
+        // Number type variables
+        else if (variable == "space_between_header_footer")
+        {
+            const int num = StringTools::string_to_int(std::string(value));
+            configBuffer.space_between_header_footer = num;
+        }
+
         else
         {
-            // throw error : variable not match with knowned variable
+            // TODO: throw error : variable not match with knowned variable
         }
     }
 
@@ -184,6 +156,11 @@ auto Config::fill_config_buffer(const Section &section) -> void
 
 auto Config::validation_config_buffer() -> void
 {
+    // Dependecy validation
+    // We have 3 mother variable that if it wasn't get set other variable(Some of config options) -
+    // can't be set
+    // 1. comment         -> this variable need this mother variable "block_*, line_*, comment_style] varaibles"
+    // 2. include_license -> this variable need this mother variable "license_path, include_license_before_header"
     if (configBuffer.comment == YES)
     {
         if (configBuffer.comment_style == YES)
@@ -213,36 +190,19 @@ auto Config::validation_config_buffer() -> void
     {
         if (configBuffer.comment_style == YES)
         {
-            // warning
+            // TODO: warn not gonna get use
         }
     }
-}
 
-auto Config::write_config(const std::fstream &file_stream, const std::string_view &file_name) -> void
-{
-    // TODO: we have to use this loop when if readed config section buffer vector is empty
-    if (!configData.sectionsBufferStorge.empty())
+    else if (configBuffer.include_license == NO)
     {
-        for (auto buffer : configData.sectionsBufferStorge)
+        if (!configBuffer.license_path.empty())
         {
+            // TODO: warn not gonna get use
         }
-    }
-    else
-    {
-        for (auto section : configData.section)
+        if (configBuffer.include_license_before_header)
         {
-            std::ranges::sort(section.fields, {}, &TokenValue::text);
-            const bool found = std::ranges::binary_search(section.fields, file_name, {}, &TokenValue::text);
-
-            if (found)
-            {
-                fill_config_buffer(section);
-                validation_config_buffer();
-
-                configBuffer.reset();
-            }
-
-            // VERBOS_TS:
+            // TODO: warn not gonna get use
         }
     }
 }
