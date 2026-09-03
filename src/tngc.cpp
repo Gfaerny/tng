@@ -1,12 +1,14 @@
+#include <cstdio>
 #include <cstdlib>
+#include <fstream>
 
 #include "config.hpp"
 #include "macro.h"
 #include "tngc.hpp"
 
-auto read_set_tngc(ConfigData config_data) -> void
+auto read_set_tngc(ConfigData &config_data) -> void
 {
-
+    std::printf("tngc try to read");
     std::ifstream config_stream(config_path);
     // std::ifstream sdas(config_path, std::ios::binary);
 
@@ -22,7 +24,6 @@ auto read_set_tngc(ConfigData config_data) -> void
     State state = State::line_start;
 
     size_t column_count{0}, line_count{0};
-    int config_vec_element_count{0};
 
     while (std::getline(config_stream, line))
     {
@@ -124,17 +125,17 @@ auto read_set_tngc(ConfigData config_data) -> void
                         }
                         else
                         {
-                            // TODO: auto error -> throw
+                            // TODO: throw error
                         }
                     }
                     else
                     {
-                        // TODO: auto erro -> throw
+                        // TODO: throw error
                     }
                 }
                 else
                 {
-                    // TODO: auto error -> throw
+                    // TODO: throw error
                 }
             }
 
