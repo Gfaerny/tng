@@ -8,12 +8,12 @@
 
 auto read_set_tngc(ConfigData &config_data) -> void
 {
-    std::printf("tngc try to read");
     std::ifstream config_stream(config_path);
     // std::ifstream sdas(config_path, std::ios::binary);
 
     if (!config_stream)
     {
+        std::printf("error 1");
         // TODO: add error auto like -> description
         // throw tng_error{.error_massage}
     }
@@ -36,7 +36,7 @@ auto read_set_tngc(ConfigData &config_data) -> void
         if (first == std::string::npos)
             continue;
 
-        if (line[first] == '#')
+        if (line [first] == '#')
             continue;
 
         for (char c : line)
@@ -97,8 +97,8 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 {
                     if ((line.size() - column_count) == 3)
                     {
-                        if (line[column_count + 1] == '\"' && line[column_count + 2] == '\"' &&
-                            line[column_count + 3] == '\n')
+                        if (line [column_count + 1] == '\"' && line [column_count + 2] == '\"' &&
+                            line [column_count + 3] == '\n')
                         {
                             state = State::reading_string_multi_line_value;
                         }
@@ -118,8 +118,8 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 {
                     if ((line.size() - column_count) == 2)
                     {
-                        if (line[column_count + 1] == '\"' && line[column_count + 2] == '\"' &&
-                            line[column_count + 3] == '\n')
+                        if (line [column_count + 1] == '\"' && line [column_count + 2] == '\"' &&
+                            line [column_count + 3] == '\n')
                         {
                             state = State::value_string_multi_line_done;
                         }
