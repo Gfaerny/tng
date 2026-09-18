@@ -11,6 +11,6 @@
 #include "error.hpp"
 #include "handle_args.hpp"
 
-auto init(int arg, char *argv[]) -> void;
+auto init(int arg, char *argv []) -> void;
 
 #endif
