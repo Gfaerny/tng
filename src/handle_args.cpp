@@ -1,25 +1,27 @@
 #include <filesystem>
+#include <iostream>
 #include <vector>
 
 #include "config.hpp"
 #include "error.hpp"
 #include "handle_args.hpp"
 #include "macro.h"
+#include "search.hpp"
 #include "tng_make_file.hpp"
 
-static fs::path expand_tilde(const fs::path &input_path)
+static auto expand_tilde(const fs::path &input_path) -> fs::path
 {
     std::string path_str = input_path.string();
 
-    if (path_str.empty() || path_str[0] != '~')
+    if (path_str.empty() || path_str [0] != '~')
         return input_path;
 
-    if (path_str.size() == 1 || path_str[1] == '/')
+    if (path_str.size() == 1 || path_str [1] == '/')
     {
         const char *home_env = std::getenv("HOME");
         fs::path home_dir;
 
-        if (home_env != nullptr && home_env[0] != '\0')
+        if (home_env != nullptr && home_env [0] != '\0')
         {
             home_dir = home_env;
         }
@@ -54,10 +56,9 @@ static fs::path expand_tilde(const fs::path &input_path)
     return result;
 }
 
-fs::path resolve_to_absolute(const fs::path &raw_path)
+auto resolve_to_absolute(const fs::path &raw_path) -> fs::path
 {
     fs::path expanded = expand_tilde(raw_path);
-
     std::error_code ec;
     fs::path canonical_path = fs::weakly_canonical(expanded, ec);
 
@@ -70,6 +71,7 @@ fs::path resolve_to_absolute(const fs::path &raw_path)
 
     return canonical_path;
 }
+
 auto handle_file(std::vector<std::string> file_explanations) -> std::vector<fs::path>
 {
     std::vector<fs::path> return_vector{};
@@ -83,14 +85,19 @@ auto handle_file(std::vector<std::string> file_explanations) -> std::vector<fs::
 
 auto handle_args(std::vector<std::string> &tng_args_vec) -> void
 {
+    std::vector<std::string> files_path{};
     size_t iit = 0;
     bool config_called{NO};
 
-    for (auto it : tng_args_vec)
+    // Remove tng first argument element "./TNG_DIRECTORY/tng" or "tng"
+    tng_args_vec.erase(tng_args_vec.begin());
+
+    for (auto arg : tng_args_vec)
     {
         ++iit;
+
         // Help
-        if (it == "-h" || it == "--help")
+        if (arg == "-h" || arg == "--help")
         {
             std::printf("tng Usage : tng -[OPTIONS] [FILENAME]"
                         "\n\n\n"
@@ -99,11 +106,12 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
                         "-h. --help    :   print help");
             return;
         }
+
         // Config
-        else if (it == "-c" || it == "--config")
+        else if (arg == "-c" || arg == "--config")
         {
-            // Is next argument exist ?
-            if (tng_args_vec.at(iit).empty())
+            // Is next argument exist?
+            if (!Search::if_element_exist(tng_args_vec, iit))
             {
                 std::printf("tng error : No config file selected\nuse --help or -h option's to see usage");
                 throw tng_error{.error_type_o = error_type::c_no_config_file_select, .error_massage = {}};
@@ -113,21 +121,34 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
                 std::printf("tng error : You can't address cofing file more then one time per command");
                 throw tng_error{.error_type_o = error_type::c_cant_select_multi_conf, .error_massage = {}};
             }
+            // TODO: need to change way of validate next argument in vector stack
             else
             {
-                // Remove argument contian config path and flag
-                tng_args_vec.erase(tng_args_vec.begin() + iit);
-                tng_args_vec.erase(tng_args_vec.begin() + (iit + 1));
                 config_called = YES;
-
-                // Config_path is global var and it's effort config class when try to auto config -> load
-                // TODO: write handler auto use -> for
-                config_path = tng_args_vec[iit];
+                // Set config_path global variable to new
+                config_path = resolve_to_absolute(tng_args_vec [iit]);
             }
         }
-        // Remove tng first argument element
-        tng_args_vec.erase(tng_args_vec.begin());
+
+        // Verbose
+        else if (arg == "-v" || arg == "--verbose")
+        {
+            verbose = YES;
+        }
+
+        // Check for non-aviable options in argument vector
+        //
+        // for one char flag -> "-X"
+        else if ((arg.size() == 2 && arg [0] == '-') || (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
+        {
+            // TODO: throw error : none active option flag got used. this flag option dosent exist.
+        }
+
+        else
+        {
+            files_path.push_back(tng_args_vec [iit]);
+        }
     }
 
-    tng_write_file(handle_file(tng_args_vec));
+    tng_write_file(handle_file(files_path));
 }
