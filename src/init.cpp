@@ -1,12 +1,11 @@
 #include "init.hpp"
 
-auto init(int arg, char *argv[]) -> void
+auto init(int arg, char *argv []) -> void
 {
-
     std::vector<std::string> tng_args_vec;
     for (int i = 0; i < arg; ++i)
     {
-        std::string argv_string = argv[i];
+        std::string argv_string = argv [i];
         tng_args_vec.push_back(argv_string);
     }
 

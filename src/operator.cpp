@@ -41,7 +41,7 @@ auto WriteOperator::import_text(const std::string &text) -> void
             for (size_t iit = 0; iit < lines_header_text.size(); ++iit)
             {
                 file_stream << section_buffer.line_prefix;
-                file_stream << lines_header_text[iit] << '\n';
+                file_stream << lines_header_text [iit] << '\n';
             }
         }
     }
@@ -50,7 +50,7 @@ auto WriteOperator::import_text(const std::string &text) -> void
     {
         for (size_t iit = 0; iit < lines_header_text.size(); iit++)
         {
-            file_stream << lines_header_text[iit] << '\n';
+            file_stream << lines_header_text [iit] << '\n';
         }
     }
 }
@@ -127,6 +127,7 @@ LICENSE_FIRST:
 END:
     file_stream.close();
 }
+
 WriteOperator::WriteOperator(fs::path file, bool overwrite_file)
 {
     if (overwrite_file)

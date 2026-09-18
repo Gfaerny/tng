@@ -1,6 +1,7 @@
 #include "config.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <filesystem>
 #include <fstream>
 #include <optional>
 #include <string>
@@ -15,15 +16,17 @@
 auto ConfigData::push_variable_value(const std::string variable_value, bool is_variable, size_t line,
                                      const size_t column) -> void
 {
-    this->sections[this->current_index].push_var_val(variable_value, is_variable, line, column);
+    this->sections [this->current_index].push_var_val(variable_value, is_variable, line, column);
 }
+
 auto ConfigData::push_field(const std::string &field, const size_t &line, const size_t &column) -> void
 {
-    this->sections[current_index].push_field(field, line, column);
+    this->sections [current_index].push_field(field, line, column);
 }
 
 Config::Config()
 {
+    config_path = Search::base_project_dir().value();
     read_set_tngc(this->configData);
 }
 

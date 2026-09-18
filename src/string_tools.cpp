@@ -37,7 +37,7 @@ std::string StringTools::clear_char_space(std::string &string)
     bool after_before{NO};
     for (std::size_t i = 0; i < string.length();)
     {
-        if (string[i] == ' ')
+        if (string [i] == ' ')
         {
             if (!after_before)
             {
@@ -45,7 +45,7 @@ std::string StringTools::clear_char_space(std::string &string)
                 continue;
             }
         }
-        else if (string[i] == '"')
+        else if (string [i] == '"')
         {
             if (!after_before)
                 after_before = {YES};

@@ -7,15 +7,12 @@
 namespace StringTools
 {
 auto extension_type(const std::string &filename) -> std::basic_string<char>;
-
 auto clear_char_space(std::string &string) -> std::string;
-
-std::string after_until(const std::string &string, const char &after, const char &until);
+auto after_until(const std::string &string, const char &after, const char &until) -> std::string;
 
 template <typename T> T after_eqaul_value(std::string &line);
 
-std::optional<int> string_line_len(const std::string &string);
-
+auto string_line_len(const std::string &string) -> std::optional<int>;
 auto string_to_int(const std::string &string) -> int;
 }; // namespace StringTools
 
