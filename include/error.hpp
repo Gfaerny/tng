@@ -1,7 +1,6 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include <cstdio>
 #include <string>
 
 enum class error_type
@@ -33,10 +32,12 @@ class tepic_error_massages
                "Are you allow to open " +
                arg + " config file?";
     }
+
     inline static std::string C_FIND_FILE(const std::string &arg)
     {
         return "Your config file does not find." + arg;
     }
+
     inline static std::string C_ARRAY_DN_MORE(const std::string &arg)
     {
         return "You use '->' more then once in config file";
