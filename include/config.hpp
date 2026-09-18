@@ -11,11 +11,14 @@
 #include "search.hpp"
 #include "section.hpp"
 
-inline passwd *pw = getpwuid(getuid());
-inline char *PWD = pw->pw_dir;
+inline auto home_directory() -> fs::path
+{
+    char *home_env(std::getenv("HOME"));
+    return fs::path(home_env);
+}
 
-inline fs::path home_directory{std::string(PWD)};
-inline fs::path config_path = Search::base_project_dir().value();
+inline fs::path config_path;
+inline bool verbose{NO};
 
 struct ConfigData
 {
@@ -40,4 +43,5 @@ class Config
     auto fill_config_buffer(const Section &section) -> void;
     auto validation_config_buffer() -> void;
 };
+
 #endif
