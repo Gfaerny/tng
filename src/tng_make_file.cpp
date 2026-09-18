@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <filesystem>
 #include <variant>
 
@@ -17,14 +18,21 @@ using secbuf_sec_bool_t = std::variant<SectionBuffer, Section, bool>;
  * This function exist to creat empty file and may used by other write_file*
  * functoin's
  */
-auto tng_write_file(const std::vector<fs::path> &file_names) -> void
+auto tng_write_file(const std::vector<fs::path> &files) -> void
 {
+    if (files.size() == 0)
+    {
+        // TODO: throw error and exit. tng got no file order;
+        std::printf("throw error and exit. tng got no file order");
+        return;
+    }
+
     Config config;
 
     // Refer to configData object in class Config
     auto &configData = config.configData;
 
-    for (auto file : file_names)
+    for (auto file : files)
     {
         secbuf_sec_bool_t storge_or_section =
             Search::storge_or_section(configData.sectionsBufferStorge, configData.sections, file);
