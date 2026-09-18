@@ -10,7 +10,7 @@ auto SectionBuffer::reset() -> void
 
     this->comment = std::nullopt;
     this->comment_style = std::nullopt;
-    this->overwrite_existing_file = std::nullopt;
+    this->overwrite_existing_file = NO;
     this->include_license = std::nullopt;
 
     this->line_prefix = "";
