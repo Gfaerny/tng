@@ -1,7 +1,7 @@
 # tng
 
 > **Status:** `tng` is currently under active development (WIP).  
-> We are actively shaping the core architecture, and contributions of any size are highly welcome and appreciated.  
+> I'am actively shaping the core architecture, and contributions of any size are highly welcome and appreciated.  
 > If you would like to help improve `tng`, please check out the [Contributing](#contributing) section below.
 
 # Work in progress
