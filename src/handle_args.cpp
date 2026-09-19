@@ -113,20 +113,24 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
             // Is next argument exist?
             if (!Search::if_element_exist(tng_args_vec, iit))
             {
-                std::printf("tng error : No config file selected\nuse --help or -h option's to see usage");
-                throw tng_error{.error_type_o = error_type::c_no_config_file_select, .error_massage = {}};
+                throw tng_error{.error_type_o = error_type::c_no_config_file_select,
+                                .error_massage = tepic_error_massages::C_FIND_FILE(tng_args_vec [iit].c_str())};
             }
             else if (config_called == YES)
             {
-                std::printf("tng error : You can't address cofing file more then one time per command");
-                throw tng_error{.error_type_o = error_type::c_cant_select_multi_conf, .error_massage = {}};
+                throw tng_error{.error_type_o = error_type::c_cant_select_multi_conf,
+                                .error_massage = tepic_error_massages::ARG_USE_MORE_THEN_ONCE()};
             }
             // TODO: need to change way of validate next argument in vector stack
             else
             {
                 config_called = YES;
                 // Set config_path global variable to new
-                config_path = resolve_to_absolute(tng_args_vec [iit]);
+                config_path = resolve_to_absolute(tng_args_vec [iit - 1]);
+
+                // TODO: maybe we need consider -v or --versobse flag first in `if` not `else if`
+                // DEBUG:
+                debug_prt("config file that consider: %s", tng_args_vec [iit].c_str());
             }
         }
 
@@ -137,8 +141,6 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
         }
 
         // Check for non-aviable options in argument vector
-        //
-        // for one char flag -> "-X"
         else if ((arg.size() == 2 && arg [0] == '-') || (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
         {
             // TODO: throw error : none active option flag got used. this flag option dosent exist.

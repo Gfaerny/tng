@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "config.hpp"
+#include "error.hpp"
 #include "macro.h"
 #include "tngc.hpp"
 
@@ -10,9 +11,13 @@ auto read_set_tngc(ConfigData &config_data) -> void
 {
     std::ifstream config_stream(config_path);
     // std::ifstream sdas(config_path, std::ios::binary);
+    debug_prt("file %s got target as config file.\n", config_path.c_str());
 
     if (!config_stream)
     {
+        throw tng_error{.error_type_o = error_type::expected_file_n_find,
+                        .error_massage{"tng error : config file can not be open."}};
+
         std::printf("error 1");
         // TODO: add error auto like -> description
         // throw tng_error{.error_massage}

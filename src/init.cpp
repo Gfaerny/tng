@@ -1,3 +1,4 @@
+#include "error.hpp"
 #include "init.hpp"
 
 auto init(int arg, char *argv []) -> void
@@ -15,10 +16,7 @@ auto init(int arg, char *argv []) -> void
     }
     catch (tng_error &e)
     {
-        if (e.error_type_o == error_type::arg_expected_argument)
-        {
-            return;
-        }
+        std::printf("tng error : %s", e.error_massage.c_str());
         return;
     }
     return;
