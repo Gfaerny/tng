@@ -9,6 +9,7 @@
 
 #include "buffer.hpp"
 #include "macro.h"
+#include "search.hpp"
 #include "section.hpp"
 #include "string_tools.hpp"
 #include "tngc.hpp"
@@ -26,7 +27,9 @@ auto ConfigData::push_field(const std::string &field, const size_t &line, const 
 
 Config::Config()
 {
-    config_path = Search::base_project_dir().value();
+    if (config_path == "NULL")
+        config_path = Search::project_config_path();
+
     read_set_tngc(this->configData);
 }
 

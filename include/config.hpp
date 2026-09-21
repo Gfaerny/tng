@@ -17,7 +17,7 @@ inline auto home_directory() -> fs::path
     return fs::path(home_env);
 }
 
-inline fs::path config_path;
+inline fs::path config_path{"NULL"};
 inline bool verbose{NO};
 
 struct ConfigData

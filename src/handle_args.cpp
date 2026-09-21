@@ -126,10 +126,9 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
             {
                 config_called = YES;
                 // Set config_path global variable to new
-                config_path = resolve_to_absolute(tng_args_vec [iit - 1]);
+                config_path = resolve_to_absolute(tng_args_vec [iit]);
 
                 // TODO: maybe we need consider -v or --versobse flag first in `if` not `else if`
-                // DEBUG:
                 debug_prt("config file that consider: %s", tng_args_vec [iit].c_str());
             }
         }

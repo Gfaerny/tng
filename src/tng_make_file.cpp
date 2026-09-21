@@ -27,6 +27,9 @@ auto tng_write_file(const std::vector<fs::path> &files) -> void
         return;
     }
 
+    // When config obj get created
+    // Config file in base project path or in system get selected and
+    // 'tngc' parser get called, to fill buffer in 'Config' class
     Config config;
 
     // Refer to configData object in class Config
