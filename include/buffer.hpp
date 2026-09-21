@@ -29,7 +29,7 @@ struct SectionBuffer
 
     // preconfiged
     bool overwrite_existing_file{NO};
-    int space_between_header_footer{4};
+    unsigned int space_between_header_footer{4};
     bool include_license_before_header{YES};
 
     // Layout

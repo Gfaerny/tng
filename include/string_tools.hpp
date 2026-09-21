@@ -12,7 +12,7 @@ auto after_until(const std::string &string, const char &after, const char &until
 
 template <typename T> T after_eqaul_value(std::string &line);
 
-auto string_line_len(const std::string &string) -> std::optional<int>;
+auto string_line_len(const std::string &string) -> std::optional<unsigned int>;
 auto string_to_int(const std::string &string) -> int;
 }; // namespace StringTools
 

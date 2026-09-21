@@ -22,7 +22,7 @@ inline bool verbose{NO};
 
 struct ConfigData
 {
-    int current_index{0};
+    unsigned int current_index{0};
     // All of config file gather around in sections vector
     std::vector<Section> sections{};
     std::vector<SectionBuffer> sectionsBufferStorge{};

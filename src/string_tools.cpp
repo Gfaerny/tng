@@ -1,4 +1,5 @@
 #include <optional>
+#include <sys/types.h>
 
 #include "string_tools.hpp"
 
@@ -100,7 +101,7 @@ template <typename T> T StringTools::after_eqaul_value(std::string &line)
 
 std::optional<int> string_line_len(const std::string &string)
 {
-    int line{};
+    unsigned int line{};
 
     for (const auto &r : string)
         if (r == '\n')
