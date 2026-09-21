@@ -34,7 +34,8 @@ auto VariableValue::push_metadata(size_t line, size_t column, bool is_variable) 
         value.metadata.column = column;
     }
 }
-MetaData VariableValue::get_metadata(bool is_variable) const
+
+auto VariableValue::get_metadata(bool is_variable) -> MetaData const
 {
     if (is_variable)
         return variable.get_metadata();
@@ -42,12 +43,12 @@ MetaData VariableValue::get_metadata(bool is_variable) const
         return value.get_metadata();
 }
 
-std::string_view VariableValue::get_variable() const
+auto VariableValue::get_variable() -> std::string_view const
 {
     return variable.text;
 }
 
-std::string_view VariableValue::get_value() const
+auto VariableValue::get_value() -> std::string_view const
 {
     return value.text;
 }
