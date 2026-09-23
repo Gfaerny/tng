@@ -11,6 +11,7 @@ enum class error_type
     file_does_n_exist,
 
     arg_expected_argument,
+    arg_non_ava_option,
 
     c_array_dn_more,
     c_more_less_symbol_EFNS,
@@ -34,6 +35,12 @@ class tepic_error_massages
     inline static auto ARG_USE_MORE_THEN_ONCE() -> std::string
     {
         return "Flag option got used more then one time.";
+    }
+
+    /* Argument option does not support yet */
+    inline static auto ARG_NON_AVA_OPT(const std::string &option) -> std::string
+    {
+        return option + " Does't supported yet.See -h or --help to see all flag options";
     }
 
     /* Config */
