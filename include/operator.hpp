@@ -12,7 +12,7 @@ class WriteOperator
 {
   public:
     explicit WriteOperator(fs::path file, SectionBuffer &section_buffer, bool overwrite_file);
-    explicit WriteOperator(fs::path file, bool overwrite_file);
+    explicit WriteOperator(fs::path file, bool overwrite_file, std::optional<bool> create_non_exist_file);
 
     auto import_text(const std::string &text) -> void;
     auto import_header_text() -> void;
