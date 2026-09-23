@@ -128,9 +128,9 @@ END:
     file_stream.close();
 }
 
-WriteOperator::WriteOperator(fs::path file, bool overwrite_file)
+WriteOperator::WriteOperator(fs::path file, bool overwrite_file, std::optional<bool> create_non_exist_file)
 {
-    if (overwrite_file)
+    if (overwrite_file || create_non_exist_file)
         file_stream.open(file, std::ios::in | std::ios::out | std::ios::trunc);
     else
         file_stream.open(file, std::ios::in | std::ios::out);
