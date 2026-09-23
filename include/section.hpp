@@ -2,7 +2,6 @@
 #define SECTION_HPP
 
 #include <string>
-#include <string_view>
 #include <vector>
 
 struct MetaData
@@ -18,8 +17,8 @@ struct TokenValue
     auto set_text(std::string txt) -> void;
     auto set_metadata(MetaData md) -> void;
 
-    auto get_metadata() const -> MetaData;
-    auto get_value() const -> std::string;
+    auto get_metadata() -> MetaData;
+    auto get_value() -> std::string;
 };
 
 struct VariableValue
@@ -32,8 +31,8 @@ struct VariableValue
     /* return metadata if bool is 0 return variable.metadata */
     auto get_metadata(bool is_variable) -> MetaData const;
 
-    auto get_variable() -> std::string_view const;
-    auto get_value() -> std::string_view const;
+    auto get_variable() -> std::string;
+    auto get_value() -> std::string;
 };
 
 struct Section
@@ -42,7 +41,7 @@ struct Section
     std::vector<VariableValue> variable_value{};
 
     /* Push in order fields */
-    auto push_field(const std::string fieldStr, const size_t line, const size_t column) -> void;
+    auto push_field(const std::string &field, const size_t line, const size_t column) -> void;
 
     /* Push in order, variavble and value string with bool true or false value */
     auto push_var_val(const std::string variableOrvalue, const bool is_variable, const size_t line, const size_t column)
