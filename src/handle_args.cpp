@@ -1,5 +1,7 @@
 #include <filesystem>
 #include <iostream>
+#include <pwd.h>
+#include <unistd.h>
 #include <vector>
 
 #include "config.hpp"
@@ -72,10 +74,10 @@ auto resolve_to_absolute(const fs::path &raw_path) -> fs::path
     return canonical_path;
 }
 
-auto handle_file(std::vector<std::string> file_explanations) -> std::vector<fs::path>
+auto handle_file(std::vector<fs::path> file_explanations) -> std::vector<fs::path>
 {
     std::vector<fs::path> return_vector{};
-    for (std::string file_explanation : file_explanations)
+    for (fs::path file_explanation : file_explanations)
     {
         fs::path resloved = resolve_to_absolute(file_explanation);
         return_vector.push_back(resloved);
@@ -85,7 +87,7 @@ auto handle_file(std::vector<std::string> file_explanations) -> std::vector<fs::
 
 auto handle_args(std::vector<std::string> &tng_args_vec) -> void
 {
-    std::vector<std::string> files_path{};
+    std::vector<fs::path> files_path{};
     size_t iit = 0;
     bool config_called{NO};
 
@@ -142,13 +144,21 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
         // Check for non-aviable options in argument vector
         else if ((arg.size() == 2 && arg [0] == '-') || (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
         {
-            // TODO: throw error : none active option flag got used. this flag option dosent exist.
+            throw tng_error{.error_type_o = error_type::arg_non_ava_option,
+                            .error_massage = tepic_error_massages::ARG_NON_AVA_OPT(arg)};
         }
 
         else
         {
-            files_path.push_back(tng_args_vec [iit]);
+            files_path.push_back(tng_args_vec [iit - 1]);
         }
+    }
+
+    // TODO: check if empty  work for this situation or try .size() == 0
+    if (files_path.empty())
+    {
+        throw tng_error{.error_type_o = error_type::arg_expected_argument,
+                        .error_massage = tepic_error_massages::ARG_EXPECT_MORE()};
     }
 
     tng_write_file(handle_file(files_path));

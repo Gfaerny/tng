@@ -1,12 +1,15 @@
-#include <cstdio>
 #include <cstdlib>
 #include <fstream>
 
 #include "config.hpp"
 #include "error.hpp"
 #include "macro.h"
+#include "search.hpp"
 #include "tngc.hpp"
 
+// START: we need to undrestand config parser problems
+// no space in variable and field name strings
+// " cpp" [X] "cpp" [Y]
 auto read_set_tngc(ConfigData &config_data) -> void
 {
     std::ifstream config_stream(config_path);
@@ -23,9 +26,10 @@ auto read_set_tngc(ConfigData &config_data) -> void
         // throw tng_error{.error_massage}
     }
 
-    std::string line{""}, section_field_string{""}, variable_string{""}, value_string{""}, valueStr_string{""},
+    std::string line{""}, field_string{""}, variable_string{""}, value_string{""}, valueStr_string{""},
         // valueStrMl value string for multi line parameter
         valueStrMl_string{""};
+
     State state = State::line_start;
 
     size_t column_count{0}, line_count{0};
@@ -51,24 +55,27 @@ auto read_set_tngc(ConfigData &config_data) -> void
             // In this scope of if's statements we just set `State` of `state`
             if (c == '[')
             {
-                if (state == State::line_start)
+                if (state == State::line_start || state == State::value_done || state == State::value_string_done ||
+                    state == State::value_string_multi_line_done)
                 {
                     state = State::reading_section_feild;
                 }
                 else
                 {
                     // TODO: auto error -> thorw
+                    throw tng_error{};
                 }
             }
 
             else if (c == '#')
             {
+                if (state != State::line_start && state != State::value_done && state != State::value_string_done &&
+                    state != State::value_string_multi_line_done)
+                {
+                    // TODO: thorw error
+                    throw tng_error{.error_type_o = error_type::c_non_except_comment_sign_use};
+                }
                 break;
-            }
-
-            else if (state == State::line_start && std::isalpha(c))
-            {
-                state = State::reading_variable;
             }
 
             else if (c == ']')
@@ -87,8 +94,10 @@ auto read_set_tngc(ConfigData &config_data) -> void
             {
                 if (state == State::reading_variable) // auto variable -> check
                 {
-                    config_data.push_variable_value(std::move(variable_string), YES, line_count, column_count);
+                    config_data.push_variable_value(variable_string, YES, line_count, column_count);
                     state = State::reading_value;
+
+                    variable_string.clear();
                 }
                 else
                 {
@@ -154,6 +163,8 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 {
                     config_data.push_variable_value(value_string, NO, line_count, column_count);
                     state = State::line_start;
+
+                    value_string.clear();
                 }
                 else
                 {
@@ -170,15 +181,32 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else if (c == ',')
                 {
-                    config_data.push_field(section_field_string, line_count, column_count);
+                    std::printf("%s", field_string.c_str());
+                    if (!Search::if_element_exist(config_data.sections, config_data.current_index))
+                        config_data.sections.emplace_back();
+
+                    config_data.sections [config_data.current_index].push_field(field_string, line_count, column_count);
+
+                    field_string.clear();
                 }
                 else if (c == ']')
                 {
-                    config_data.push_field(section_field_string, line_count, column_count);
-                    ++config_data.current_index;
+                    std::printf("%s", field_string.c_str());
+
+                    if (!Search::if_element_exist(config_data.sections, config_data.current_index))
+                        config_data.sections.emplace_back();
+
+                    config_data.sections [config_data.current_index].push_field(field_string, line_count, column_count);
+
+                    field_string.clear();
                 }
                 else
-                    section_field_string += c;
+                    field_string += c;
+            }
+
+            else if (state == State::line_start && std::isalpha(c))
+            {
+                state = State::reading_variable;
             }
 
             else if (state == State::reading_variable)
@@ -204,11 +232,15 @@ auto read_set_tngc(ConfigData &config_data) -> void
             else if (state == State::value_done)
             {
                 config_data.push_variable_value(value_string, NO, line_count, column_count);
+
+                value_string.clear();
             }
 
             else if (state == State::value_string_done)
             {
                 config_data.push_variable_value(valueStrMl_string, NO, line_count, column_count);
+
+                valueStrMl_string.clear();
             }
         }
     }

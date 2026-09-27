@@ -1,9 +1,11 @@
 #include <cstddef>
 #include <cstdlib>
+#include <iostream>
 #include <optional>
 #include <sstream>
 
 #include "buffer.hpp"
+#include "config.hpp"
 #include "macro.h"
 #include "operator.hpp"
 
@@ -99,10 +101,8 @@ auto WriteOperator::import_space_b_header_footer() -> void
 
 WriteOperator::WriteOperator(fs::path file, SectionBuffer &section_buffer, bool overwrite_file)
 {
-    if (overwrite_file)
-        file_stream.open(file, std::ios::in | std::ios::out | std::ios::trunc);
-    else
-        file_stream.open(file, std::ios::in | std::ios::out);
+    // TODO: add overwrite or std::ios open mode for defrend comfiguration
+    file_stream.open(file, std::ios::in | std::ios::out | std::ios::trunc);
 
     // Ask field config for add license before or not
     if (section_buffer.include_license_before_header)
@@ -110,7 +110,7 @@ WriteOperator::WriteOperator(fs::path file, SectionBuffer &section_buffer, bool 
 
     else
         goto LICENSE_FIRST;
-
+    debug_prt("Writing generated text in file %s", file.c_str());
 HEADER_FIRST:
     import_header_text();
     import_license_text();
@@ -130,10 +130,14 @@ END:
 
 WriteOperator::WriteOperator(fs::path file, bool overwrite_file, std::optional<bool> create_non_exist_file)
 {
-    if (overwrite_file || create_non_exist_file)
-        file_stream.open(file, std::ios::in | std::ios::out | std::ios::trunc);
-    else
-        file_stream.open(file, std::ios::in | std::ios::out);
+    // if (overwrite_file || create_non_exist_file)
+    // {
+    file_stream.open(file, std::ios::in | std::ios::out | std::ios::trunc);
+    debug_prt("file %s, created", file.c_str());
+    // }
+    // TODO: no use for this
+    // else
+    file_stream.open(file, std::ios::in | std::ios::out);
 
     file_stream.close();
 }

@@ -13,9 +13,9 @@ enum class State
     reading_value,
     reading_string_value,
     reading_string_multi_line_value,
+    value_done,
     value_string_done,
     value_string_multi_line_done,
-    value_done,
     section_done
 };
 

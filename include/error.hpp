@@ -16,7 +16,8 @@ enum class error_type
     c_array_dn_more,
     c_more_less_symbol_EFNS,
     c_no_config_file_select,
-    c_cant_select_multi_conf
+    c_cant_select_multi_conf,
+    c_non_except_comment_sign_use
 };
 
 class tepic_error_massages

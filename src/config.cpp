@@ -22,7 +22,12 @@ auto ConfigData::push_variable_value(const std::string variable_value, bool is_v
 
 auto ConfigData::push_field(const std::string &field, const size_t &line, const size_t &column) -> void
 {
-    this->sections [current_index].push_field(field, line, column);
+    if (!Search::if_element_exist(this->sections, this->current_index))
+    {
+        this->sections.emplace_back();
+    }
+
+    this->sections.at(this->current_index).push_field(field, line, column);
 }
 
 Config::Config()
@@ -30,19 +35,19 @@ Config::Config()
     if (config_path == "NULL")
         config_path = Search::project_config_path();
 
-    read_set_tngc(this->configData);
+    read_set_tngc(configData);
 }
 
 /*
  * Fill ConfigSectoinBuffer with section data
  */
-auto Config::fill_config_buffer(const Section &section) -> void
+auto Config::fill_config_buffer(Section &section) -> void
 {
     // Switch between aviable variable
     // If it was neccesry we add to configBuffer
     for (auto &variable_value : section.variable_value)
     {
-        const auto &variable = variable_value.get_variable();
+        std::string variable = variable_value.get_variable();
         const auto &value = variable_value.get_value();
 
         // Bool type variables

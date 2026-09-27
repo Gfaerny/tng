@@ -1,4 +1,6 @@
+#include "macro.h"
 #include "section.hpp"
+#include <cstdio>
 
 auto TokenValue::set_text(std::string txt) -> void
 {
@@ -11,12 +13,12 @@ auto TokenValue::set_metadata(MetaData md) -> void
     md.column = metadata.column;
 }
 
-auto TokenValue::get_value() const -> std::string
+auto TokenValue::get_value() -> std::string
 {
     return this->text;
 }
 
-auto TokenValue::get_metadata() const -> MetaData
+auto TokenValue::get_metadata() -> MetaData
 {
     return metadata;
 }
@@ -43,19 +45,21 @@ auto VariableValue::get_metadata(bool is_variable) -> MetaData const
         return value.get_metadata();
 }
 
-auto VariableValue::get_variable() -> std::string_view const
+auto VariableValue::get_variable() -> std::string
 {
     return variable.text;
 }
 
-auto VariableValue::get_value() -> std::string_view const
+auto VariableValue::get_value() -> std::string
 {
     return value.text;
 }
 
-auto Section::push_field(std::string fieldStr, size_t line, size_t column) -> void
+auto Section::push_field(const std::string &field, const size_t line, const size_t column) -> void
 {
-    fields.push_back({fieldStr, {line, column}});
+    MetaData metadata{.line = line, .column = column};
+    TokenValue tokenvalue{.text = field, .metadata = metadata};
+    this->fields.push_back(std::move(tokenvalue));
 }
 
 auto Section::push_var_val(std::string variableOrvalue, bool is_variable, size_t line, size_t column) -> void
