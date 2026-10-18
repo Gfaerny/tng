@@ -41,11 +41,13 @@ struct Section
     std::vector<VariableValue> variable_value{};
 
     /* Push in order fields */
-    auto push_field(const std::string &field, const size_t line, const size_t column) -> void;
+    auto push_field(const std::string &field, const size_t line,
+                    const size_t column) -> void;
 
-    /* Push in order, variavble and value string with bool true or false value */
-    auto push_var_val(const std::string variableOrvalue, const bool is_variable, const size_t line, const size_t column)
-        -> void;
+    /* Push in order, variavble and value string with bool true or false value
+     */
+    auto push_var_val(const std::string variableOrvalue, const bool is_variable,
+                      const size_t line, const size_t column) -> void;
 };
 
 #endif

@@ -25,11 +25,13 @@ auto WriteOperator::import_text(const std::string &text) -> void
         {
             if (lines_header_text.size() >= 3)
             {
-                // seperate header_string by line and push to lines_header_text vector
+                // seperate header_string by line and push to lines_header_text
+                // vector
                 file_stream << section_buffer.block_header << '\n';
                 for (auto &line_input : lines_header_text)
                 {
-                    file_stream << section_buffer.block_line_prefix << " " << line_input << '\n';
+                    file_stream << section_buffer.block_line_prefix << " "
+                                << line_input << '\n';
                 }
                 file_stream << section_buffer.block_footer << '\n';
             }
@@ -93,13 +95,15 @@ auto WriteOperator::import_license_text() -> void
 
 auto WriteOperator::import_space_b_header_footer() -> void
 {
-    for (int count{0}; count < section_buffer.space_between_header_footer; count++)
+    for (int count{0}; count < section_buffer.space_between_header_footer;
+         count++)
     {
         import_text("\n");
     }
 }
 
-WriteOperator::WriteOperator(fs::path file, SectionBuffer &section_buffer, bool overwrite_file)
+WriteOperator::WriteOperator(fs::path file, SectionBuffer &section_buffer,
+                             bool overwrite_file)
 {
     // TODO: add overwrite or std::ios open mode for defrend comfiguration
     file_stream.open(file, std::ios::in | std::ios::out | std::ios::trunc);
@@ -128,7 +132,8 @@ END:
     file_stream.close();
 }
 
-WriteOperator::WriteOperator(fs::path file, bool overwrite_file, std::optional<bool> create_non_exist_file)
+WriteOperator::WriteOperator(fs::path file, bool overwrite_file,
+                             std::optional<bool> create_non_exist_file)
 {
     // if (overwrite_file || create_non_exist_file)
     // {

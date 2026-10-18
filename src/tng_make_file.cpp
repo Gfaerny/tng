@@ -32,8 +32,8 @@ auto tng_write_file(const std::vector<fs::path> &files) -> void
 
     for (auto file : files)
     {
-        secbuf_sec_bool_t storge_or_section =
-            Search::storge_or_section(configData.sectionsBufferStorge, configData.sections, file);
+        secbuf_sec_bool_t storge_or_section = Search::storge_or_section(
+            configData.sectionsBufferStorge, configData.sections, file);
 
         // There is no field that match for this filename in config file
         // TNG just create the file if it's not already exist
@@ -41,12 +41,16 @@ auto tng_write_file(const std::vector<fs::path> &files) -> void
         {
             // TODO: Need to explain this functionallity to README
             // `tng` if file does not have any extension name choose filename
-            // for example file named "hi" -> no extension, right! so tng choose hi as extension
+            // for example file named "hi" -> no extension, right! so tng choose
+            // hi as extension
             if (file.extension().empty())
-                debug_prt("no field finded for this extension file name: %s", file.filename().c_str());
+                debug_prt("no field finded for this extension file name: %s",
+                          file.filename().c_str());
             else
-                debug_prt("no field finded for this extension file name: %s", file.extension().c_str());
-            // No config for this field. so we have to use wp manual argument passing
+                debug_prt("no field finded for this extension file name: %s",
+                          file.extension().c_str());
+            // No config for this field. so we have to use wp manual argument
+            // passing
             WriteOperator wp(file, NO, YES);
             continue;
         }
@@ -54,7 +58,8 @@ auto tng_write_file(const std::vector<fs::path> &files) -> void
         // finded field match in storged section buffer's
         else if (auto *buffer = std::get_if<SectionBuffer>(&storge_or_section))
         {
-            debug_prt("find extension filename field in buffer: %s", file.extension().c_str());
+            debug_prt("find extension filename field in buffer: %s",
+                      file.extension().c_str());
             WriteOperator wp(file, *buffer, buffer->overwrite_existing_file);
             continue;
         }
@@ -63,11 +68,13 @@ auto tng_write_file(const std::vector<fs::path> &files) -> void
         {
             config.fill_config_buffer(*section);
             config.validation_config_buffer();
-            WriteOperator wp(file, config.configBuffer, config.configBuffer.overwrite_existing_file);
+            WriteOperator wp(file, config.configBuffer,
+                             config.configBuffer.overwrite_existing_file);
 
-            // TODO: better to sync this order to on of the Config or Config.class
-            // To push configBuffer to Config.Data.Storge
-            config.configData.sectionsBufferStorge.push_back(config.configBuffer);
+            // TODO: better to sync this order to on of the Config or
+            // Config.class To push configBuffer to Config.Data.Storge
+            config.configData.sectionsBufferStorge.push_back(
+                config.configBuffer);
             config.configBuffer.reset();
 
             continue;

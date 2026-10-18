@@ -14,13 +14,16 @@
 #include "string_tools.hpp"
 #include "tngc.hpp"
 
-auto ConfigData::push_variable_value(const std::string variable_value, bool is_variable, size_t line,
+auto ConfigData::push_variable_value(const std::string variable_value,
+                                     bool is_variable, size_t line,
                                      const size_t column) -> void
 {
-    this->sections [this->current_index].push_var_val(variable_value, is_variable, line, column);
+    this->sections [this->current_index].push_var_val(
+        variable_value, is_variable, line, column);
 }
 
-auto ConfigData::push_field(const std::string &field, const size_t &line, const size_t &column) -> void
+auto ConfigData::push_field(const std::string &field, const size_t &line,
+                            const size_t &column) -> void
 {
     if (!Search::if_element_exist(this->sections, this->current_index))
     {
@@ -168,10 +171,12 @@ auto Config::fill_config_buffer(Section &section) -> void
 auto Config::validation_config_buffer() -> void
 {
     // Dependecy validation
-    // We have 3 mother variable that if it wasn't get set other variable(Some of config options) -
-    // can't be set
-    // 1. comment         -> this variable need this mother variable "block_*, line_*, comment_style] varaibles"
-    // 2. include_license -> this variable need this mother variable "license_path, include_license_before_header"
+    // We have 3 mother variable that if it wasn't get set other variable(Some
+    // of config options) - can't be set
+    // 1. comment         -> this variable need this mother variable "block_*,
+    // line_*, comment_style] varaibles"
+    // 2. include_license -> this variable need this mother variable
+    // "license_path, include_license_before_header"
     if (configBuffer.comment == YES)
     {
         if (configBuffer.comment_style == YES)
@@ -193,7 +198,8 @@ auto Config::validation_config_buffer() -> void
         {
             if (configBuffer.line_prefix == "")
             {
-                // TODO: throw error. write line prefix if you want to write your text in comment
+                // TODO: throw error. write line prefix if you want to write
+                // your text in comment
             }
         }
     }

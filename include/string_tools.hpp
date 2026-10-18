@@ -8,7 +8,8 @@ namespace StringTools
 {
 auto extension_type(const std::string &filename) -> std::basic_string<char>;
 auto clear_char_space(std::string &string) -> std::string;
-auto after_until(const std::string &string, const char &after, const char &until) -> std::string;
+auto after_until(const std::string &string, const char &after,
+                 const char &until) -> std::string;
 
 template <typename T> T after_eqaul_value(std::string &line);
 

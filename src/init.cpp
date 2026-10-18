@@ -1,5 +1,5 @@
-#include "error.hpp"
 #include "init.hpp"
+#include "error.hpp"
 
 auto init(int arg, char *argv []) -> void
 {

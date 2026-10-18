@@ -41,7 +41,8 @@ auto Search::base_project_dir() -> std::optional<fs::path>
 auto Search::project_config_path() -> fs::path
 {
     std::filesystem::path current_path = std::filesystem::current_path();
-    fs::path default_config_file_path = home_directory() / ".config" / "tng" / "tng.conf";
+    fs::path default_config_file_path =
+        home_directory() / ".config" / "tng" / "tng.conf";
 
     if (Search::base_project_dir() != std::nullopt)
     {
@@ -60,20 +61,24 @@ auto Search::project_config_path() -> fs::path
     return fs::path(home_directory() / ".config" / "tng" / "tng.conf");
 }
 
-// TODO: for files that ordered to create or passed to tng we need to hanlde them in struct with
-// path and name
+// TODO: for files that ordered to create or passed to tng we need to hanlde
+// them in struct with path and name
 
 /*
- * This function search for sectionBuffer and it's storge in configData in Config and if it fit
+ * This function search for sectionBuffer and it's storge in configData in
+ * Config and if it fit
  */
-secbuf_sec_bool_t Search::storge_or_section(const std::vector<SectionBuffer> &section_buffers,
-                                            const std::vector<Section> &sectios, std::string filename) noexcept
+secbuf_sec_bool_t Search::storge_or_section(
+    const std::vector<SectionBuffer> &section_buffers,
+    const std::vector<Section> &sectios, std::string filename) noexcept
 {
     for (auto buffer : section_buffers)
     {
         std::sort(buffer.fields.begin(), buffer.fields.end());
-        if (std::binary_search(buffer.fields.begin(), buffer.fields.end(), filename) ||
-            std::binary_search(buffer.fields.begin(), buffer.fields.end(), StringTools::extension_type(filename)))
+        if (std::binary_search(buffer.fields.begin(), buffer.fields.end(),
+                               filename) ||
+            std::binary_search(buffer.fields.begin(), buffer.fields.end(),
+                               StringTools::extension_type(filename)))
         {
             return buffer;
         }
@@ -85,8 +90,11 @@ secbuf_sec_bool_t Search::storge_or_section(const std::vector<SectionBuffer> &se
     for (auto section : sectios)
     {
         std::ranges::sort(section.fields, {}, &TokenValue::text);
-        if (std::ranges::binary_search(section.fields, filename, {}, &TokenValue::text) ||
-            std::ranges::binary_search(section.fields, StringTools::extension_type(filename), {}, &TokenValue::text))
+        if (std::ranges::binary_search(section.fields, filename, {},
+                                       &TokenValue::text) ||
+            std::ranges::binary_search(section.fields,
+                                       StringTools::extension_type(filename),
+                                       {}, &TokenValue::text))
         {
             return section;
         }

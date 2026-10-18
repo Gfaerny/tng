@@ -59,7 +59,8 @@ std::string StringTools::clear_char_space(std::string &string)
 }
 
 // TODO: write description auto function -> for
-std::string StringTools::after_until(const std::string &string, const char &after, const char &until)
+std::string StringTools::after_until(const std::string &string,
+                                     const char &after, const char &until)
 {
     std::string result{};
     bool after_before{NO};

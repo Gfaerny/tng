@@ -45,7 +45,9 @@ static auto expand_tilde(const fs::path &input_path) -> fs::path
 
     /* Handling ~otheruser/path expansion if required.  */
     std::size_t slash_pos = path_str.find('/');
-    std::string username = (slash_pos == std::string::npos) ? path_str.substr(1) : path_str.substr(1, slash_pos - 1);
+    std::string username = (slash_pos == std::string::npos)
+                               ? path_str.substr(1)
+                               : path_str.substr(1, slash_pos - 1);
 
     struct passwd *pw = getpwnam(username.c_str());
     if (pw == nullptr || pw->pw_dir == nullptr)
@@ -74,7 +76,8 @@ auto resolve_to_absolute(const fs::path &raw_path) -> fs::path
     return canonical_path;
 }
 
-auto handle_file(std::vector<fs::path> file_explanations) -> std::vector<fs::path>
+auto handle_file(std::vector<fs::path> file_explanations)
+    -> std::vector<fs::path>
 {
     std::vector<fs::path> return_vector{};
     for (fs::path file_explanation : file_explanations)
@@ -101,11 +104,12 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
         // Help
         if (arg == "-h" || arg == "--help")
         {
-            std::printf("tng Usage : tng -[OPTIONS] [FILENAME]"
-                        "\n\n\n"
-                        "-c [FILEPATH], --config [FILEPATH] :   locate config file path"
-                        "\n\n"
-                        "-h. --help    :   print help");
+            std::printf(
+                "tng Usage : tng -[OPTIONS] [FILENAME]"
+                "\n\n\n"
+                "-c [FILEPATH], --config [FILEPATH] :   locate config file path"
+                "\n\n"
+                "-h. --help    :   print help");
             return;
         }
 
@@ -115,23 +119,30 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
             // Is next argument exist?
             if (!Search::if_element_exist(tng_args_vec, iit))
             {
-                throw tng_error{.error_type_o = error_type::c_no_config_file_select,
-                                .error_massage = tepic_error_massages::C_FIND_FILE(tng_args_vec [iit].c_str())};
+                throw tng_error{
+                    .error_type_o = error_type::c_no_config_file_select,
+                    .error_massage = tepic_error_massages::C_FIND_FILE(
+                        tng_args_vec [iit].c_str())};
             }
             else if (config_called == YES)
             {
-                throw tng_error{.error_type_o = error_type::c_cant_select_multi_conf,
-                                .error_massage = tepic_error_massages::ARG_USE_MORE_THEN_ONCE()};
+                throw tng_error{
+                    .error_type_o = error_type::c_cant_select_multi_conf,
+                    .error_massage =
+                        tepic_error_massages::ARG_USE_MORE_THEN_ONCE()};
             }
-            // TODO: need to change way of validate next argument in vector stack
+            // TODO: need to change way of validate next argument in vector
+            // stack
             else
             {
                 config_called = YES;
                 // Set config_path global variable to new
                 config_path = resolve_to_absolute(tng_args_vec [iit]);
 
-                // TODO: maybe we need consider -v or --versobse flag first in `if` not `else if`
-                debug_prt("config file that consider: %s", tng_args_vec [iit].c_str());
+                // TODO: maybe we need consider -v or --versobse flag first in
+                // `if` not `else if`
+                debug_prt("config file that consider: %s",
+                          tng_args_vec [iit].c_str());
             }
         }
 
@@ -142,10 +153,12 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
         }
 
         // Check for non-aviable options in argument vector
-        else if ((arg.size() == 2 && arg [0] == '-') || (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
+        else if ((arg.size() == 2 && arg [0] == '-') ||
+                 (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
         {
             throw tng_error{.error_type_o = error_type::arg_non_ava_option,
-                            .error_massage = tepic_error_massages::ARG_NON_AVA_OPT(arg)};
+                            .error_massage =
+                                tepic_error_massages::ARG_NON_AVA_OPT(arg)};
         }
 
         else
@@ -158,7 +171,8 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
     if (files_path.empty())
     {
         throw tng_error{.error_type_o = error_type::arg_expected_argument,
-                        .error_massage = tepic_error_massages::ARG_EXPECT_MORE()};
+                        .error_massage =
+                            tepic_error_massages::ARG_EXPECT_MORE()};
     }
 
     tng_write_file(handle_file(files_path));
