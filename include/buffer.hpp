@@ -10,8 +10,9 @@
 
 struct SectionBuffer
 {
-    // `comment_style` vairable get filled in config file with `block` or `line` option
-    // and in this buffer comment_style in order can be {YES} -> `block` and {NO} -> `line`
+    // `comment_style` vairable get filled in config file with `block` or `line`
+    // option and in this buffer comment_style in order can be {YES} -> `block`
+    // and {NO} -> `line`
 
     std::vector<std::string_view> fields{};
     std::vector<std::string_view> header_texts{};

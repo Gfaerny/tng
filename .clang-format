@@ -2,6 +2,7 @@ BasedOnStyle: Microsoft
 Language:        Cpp
 
 SpaceBeforeSquareBrackets: true
+ColumnLimit: 80
 MaxEmptyLinesToKeep: 1
 KeepEmptyLinesAtTheStartOfBlocks: false
 SeparateDefinitionBlocks: Always

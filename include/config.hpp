@@ -24,9 +24,11 @@ struct ConfigData
     std::vector<SectionBuffer> sectionsBufferStorge{};
 
     auto section_validation(SectionBuffer configBuffer) -> void;
-    auto push_variable_value(const std::string variable_value, bool is_variable, size_t line, size_t column) -> void;
+    auto push_variable_value(const std::string variable_value, bool is_variable,
+                             size_t line, size_t column) -> void;
     /* Need std::string_view for first argument */
-    auto push_field(const std::string &field, const size_t &line, const size_t &column) -> void;
+    auto push_field(const std::string &field, const size_t &line,
+                    const size_t &column) -> void;
 };
 
 class Config
