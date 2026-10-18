@@ -24,7 +24,7 @@ class tepic_error_massages
 {
   public:
     /* ARGUMENT */
-
+    /* ------------------------------------------------------------------- */
     /* Argument missing */
     inline static std::string ARG_EXPECT_MORE()
     {
@@ -44,8 +44,10 @@ class tepic_error_massages
         return option + " Does't supported yet.See -h or --help to see all flag options";
     }
 
-    /* Config */
+    /* ------------------------------------------------------------------- */
 
+    /* Config */
+    /* ------------------------------------------------------------------- */
     /* Config file not exist */
     inline static std::string C_FILE_N_EXIST(const std::string &arg)
     {
@@ -65,6 +67,30 @@ class tepic_error_massages
     inline static std::string C_FIND_FILE(const std::string &arg)
     {
         return "Your config file does not find." + arg;
+    }
+
+    /* ------------------------------------------------------------------- */
+
+    /* TNGC */
+    /* ------------------------------------------------------------------- */
+    /* Comment sign must be used first of line */
+    inline static std::string TNGC_UNEXEC_COMMENT_SIGN(const int line, const int column)
+    {
+        return "Use comment sign ('#') in first of line." + std::to_string(line) + std::string(":") +
+               std::to_string(column);
+    }
+
+    inline static std::string TNGC_OPEN_SEC(const int line, const int column)
+    {
+        // START: This error massage should explain what happend in tngc:60
+        return "Define a section after of before another section, Check (man tng.section)." + std::to_string(line) +
+               std::string(":") + std::to_string(column);
+    }
+
+    inline static std::string TNGC_CLOSE_SECT(const int line, const int column)
+    {
+        return "Close section defination after section got defined our there is no section to define. " +
+               std::to_string(line) + std::string(":") + std::to_string(column);
     }
 };
 

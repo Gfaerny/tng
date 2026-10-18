@@ -20,10 +20,6 @@ auto read_set_tngc(ConfigData &config_data) -> void
     {
         throw tng_error{.error_type_o = error_type::expected_file_n_find,
                         .error_massage{"tng error : config file can not be open."}};
-
-        std::printf("error 1");
-        // TODO: add error auto like -> description
-        // throw tng_error{.error_massage}
     }
 
     std::string line{""}, field_string{""}, variable_string{""}, value_string{""}, valueStr_string{""},
@@ -62,8 +58,7 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else
                 {
-                    // TODO: auto error -> thorw
-                    throw tng_error{};
+                    throw tng_error{.error_massage = tepic_error_massages::TNGC_OPEN_SEC(line_count, column_count)};
                 }
             }
 
@@ -72,8 +67,9 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 if (state != State::line_start && state != State::value_done && state != State::value_string_done &&
                     state != State::value_string_multi_line_done)
                 {
-                    // TODO: thorw error
-                    throw tng_error{.error_type_o = error_type::c_non_except_comment_sign_use};
+                    throw tng_error{.error_type_o = error_type::c_non_except_comment_sign_use,
+                                    .error_massage =
+                                        tepic_error_massages::TNGC_UNEXEC_COMMENT_SIGN(line_count, column_count)};
                 }
                 break;
             }
