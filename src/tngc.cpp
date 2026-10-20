@@ -2,12 +2,11 @@
 #include <fstream>
 
 #include "config.hpp"
-#include "error.hpp"
 #include "macro.h"
 #include "search.hpp"
 #include "tngc.hpp"
+#include <error.hpp>
 
-// START: we need to undrestand config parser problems
 // no space in variable and field name strings
 // " cpp" [X] "cpp" [Y]
 auto read_set_tngc(ConfigData &config_data) -> void
@@ -19,14 +18,11 @@ auto read_set_tngc(ConfigData &config_data) -> void
     if (!config_stream)
     {
         throw tng_error{
-            .error_type_o = error_type::expected_file_n_find,
             .error_massage{"tng error : config file can not be open."}};
     }
 
     std::string line{""}, field_string{""}, variable_string{""},
-        value_string{""}, valueStr_string{""},
-        // valueStrMl value string for multi line parameter
-        valueStrMl_string{""};
+        value_string{""}, valueStr_string{""}, valueStrMl_string{""};
 
     State state = State::line_start;
 
@@ -61,9 +57,10 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else
                 {
-                    throw tng_error{.error_massage =
-                                        tepic_error_massages::TNGC_OPEN_SEC(
-                                            line_count, column_count)};
+                    throw tng_error{
+                        .error_massage =
+                            tepic_error_massages::TNGC_UNEXCEPT_SEC_DEF_ACT(
+                                line_count, column_count)};
                 }
             }
 
@@ -74,10 +71,8 @@ auto read_set_tngc(ConfigData &config_data) -> void
                     state != State::value_string_multi_line_done)
                 {
                     throw tng_error{
-                        .error_type_o =
-                            error_type::c_non_except_comment_sign_use,
                         .error_massage =
-                            tepic_error_massages::TNGC_UNEXEC_COMMENT_SIGN(
+                            tepic_error_massages::TNGC_UNEXEC_COMMENT(
                                 line_count, column_count)};
                 }
                 break;
@@ -91,7 +86,10 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else
                 {
-                    // TODO: auto error -> throw
+                    throw tng_error{
+                        .error_massage =
+                            tepic_error_massages::TNGC_UNEXCEPT_SEC_DEF_ACT(
+                                line_count, column_count)};
                 }
             }
 
@@ -107,7 +105,9 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else
                 {
-                    // TODO: auto error -> throw
+                    throw tng_error{.error_massage =
+                                        tepic_error_massages::TNGC_UNEXEC_EQUEL(
+                                            line_count, column_count)};
                 }
             }
 
@@ -123,13 +123,8 @@ auto read_set_tngc(ConfigData &config_data) -> void
                         {
                             state = State::reading_string_multi_line_value;
                         }
-                        else
-                        {
-                            // TODO: auto error -> throw
-                        }
                     }
-                    else
-                        state = State::reading_string_value;
+                    state = State::reading_string_value;
                 }
                 else if (state == State::reading_string_value)
                 {
@@ -145,19 +140,20 @@ auto read_set_tngc(ConfigData &config_data) -> void
                         {
                             state = State::value_string_multi_line_done;
                         }
-                        else
-                        {
-                            // TODO: throw error
-                        }
                     }
                     else
                     {
-                        // TODO: throw error
+                        throw tng_error{
+                            .error_massage =
+                                tepic_error_massages::TNGC_UNCLOSE_ML_EQUEL(
+                                    line_count, column_count)};
                     }
                 }
                 else
                 {
-                    // TODO: throw error
+                    throw tng_error{.error_massage =
+                                        tepic_error_massages::TNGC_UNEXEC_QUOTE(
+                                            line_count, column_count)};
                 }
             }
 
@@ -167,17 +163,29 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 {
                     state = State::line_start;
                 }
-                else if (state == State::reading_value)
+                else if (state == State::value_string_done ||
+                         state == State::value_string_multi_line_done ||
+                         state == State::reading_value)
                 {
-                    config_data.push_variable_value(value_string, NO,
-                                                    line_count, column_count);
+                    if (state == State::value_string_done)
+                    {
+                        config_data.push_variable_value(
+                            valueStr_string, NO, line_count, column_count);
+                        valueStr_string.clear();
+                    }
+                    else if (state == State::value_string_multi_line_done)
+                    {
+                        config_data.push_variable_value(
+                            valueStrMl_string, NO, line_count, column_count);
+                        valueStrMl_string.clear();
+                    }
+                    else if (state == State::reading_value)
+                    {
+                        config_data.push_variable_value(
+                            value_string, NO, line_count, column_count);
+                        value_string.clear();
+                    }
                     state = State::line_start;
-
-                    value_string.clear();
-                }
-                else
-                {
-                    // TODO: auto error -> throw
                 }
             }
 

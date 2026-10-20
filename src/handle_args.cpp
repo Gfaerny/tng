@@ -119,15 +119,13 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
             // Is next argument exist?
             if (!Search::if_element_exist(tng_args_vec, iit))
             {
-                throw tng_error{
-                    .error_type_o = error_type::c_no_config_file_select,
-                    .error_massage = tepic_error_massages::C_FIND_FILE(
-                        tng_args_vec [iit].c_str())};
+                throw tng_error{.error_massage =
+                                    tepic_error_massages::C_FIND_FILE(
+                                        tng_args_vec [iit].c_str())};
             }
             else if (config_called == YES)
             {
                 throw tng_error{
-                    .error_type_o = error_type::c_cant_select_multi_conf,
                     .error_massage =
                         tepic_error_massages::ARG_USE_MORE_THEN_ONCE()};
             }
@@ -156,8 +154,7 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
         else if ((arg.size() == 2 && arg [0] == '-') ||
                  (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
         {
-            throw tng_error{.error_type_o = error_type::arg_non_ava_option,
-                            .error_massage =
+            throw tng_error{.error_massage =
                                 tepic_error_massages::ARG_NON_AVA_OPT(arg)};
         }
 
@@ -170,8 +167,7 @@ auto handle_args(std::vector<std::string> &tng_args_vec) -> void
     // TODO: check if empty  work for this situation or try .size() == 0
     if (files_path.empty())
     {
-        throw tng_error{.error_type_o = error_type::arg_expected_argument,
-                        .error_massage =
+        throw tng_error{.error_massage =
                             tepic_error_massages::ARG_EXPECT_MORE()};
     }
 

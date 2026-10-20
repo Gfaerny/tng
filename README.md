@@ -100,10 +100,10 @@ Below is a simplified version of the example you provided, with explanations.
 
 ### Configuration syntax rules
 
-- For boolean variables you can use `<YES>` or `<NO>` as aliases for `<true>` or `<false>` (btw: also you can now use `yes` or `no`).
-- Paths must be absolute. Relative (non-absolute) paths are not allowed.
-- Use triple quotes `"""` for multi-line string values.
-- Sections are declared using `[section_name]`.  
+- For boolean variables you can use `<YES>` or `<NO>` as aliases for `<true>` or `<false>` (btw: you can also now use `yes` or `no`).
+- Paths must be absolute. Relative (non-absolute) paths are not allowed for now, Hopfully in oder release except inital release we can work on it).
+- Use triple quotes `"""` for multi-line string values, and multi-line value for now is aviable for string needed variable.
+- Sections are declared using `[section_name]`.
   For example:
   - `[cpp, c, cc, hpp, h]` defines a section that applies to multiple extensions.
   - `[GLOBAL]` defines fallback behavior for files whose extension does not match any other section.
@@ -208,63 +208,12 @@ These mark places where proper error reporting should be implemented using the e
 
 The process to implement these TODOs is:
 
-1. **Locate error definitions**
-
-   Open:
-
-   ```text
-   include/tng/error.hpp
-   ```
-
-   (Or the corresponding header in your tree.) This file defines:
-   - error codes (enums),
-   - error categories,
-   - error classes / exception types,
-   - helper functions or factories, if any.
-
-2. **Add a new error code (if needed)**
-
-   If the scenario is not covered by any existing error code, add a new enumerator to the appropriate enum, following the existing naming conventions.
-
-   Example:
-
-   ```cpp
-   enum class error_type
-   {
-       cannot_open_create_file,
-       expected_file_n_find,
-       file_does_n_exist,
- 
-       arg_expected_argument,
-
-       c_array_dn_more,
-       c_more_less_symbol_EFNS,
-       c_no_config_file_select,
-       c_cant_select_multi_conf
-   };
-   ```
-
-3. **Replace `// TODO: throw error` with a proper throw**
-
-   For example, instead of:
-
-   ```cpp
-   // TODO: throw error this config probelm. no file selected for config
-   ```
-
-   you might write:
-
-   ```cpp
-    throw tng_error{.error_type_o = error_type::c_no_config_file_select,
-      .error_massage = {"no file selected for config"}};
-
-   ```
-  
 ---
 
 ## Contributing
 
-We welcome contributions to `tng`. The project is under active development and there are many areas where you can help:
+We welcome contributions to `tng`. The project is under active development
+and there are many areas where you can help:
 
 - implementing missing error handling (`// TODO: throw error`),
 - extending configuration features,
@@ -285,10 +234,6 @@ Examples of current TODO categories:
 
 - `// TODO: throw error`  
   Implement error handling using the structured error API in `error.hpp`.
-- `// TODO: use PWD in here`  
-  Improve path handling to optionally support `PWD`-based relative paths.
-- `// TODO: Did we have to write modifie analyzer ...`  
-  Design and implement logic for deciding when generated buffers should be rewritten.
 
 ### Coding guidelines
 

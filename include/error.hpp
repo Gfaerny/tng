@@ -1,24 +1,10 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include <cstdio>
 #include <string>
 
-enum class error_type
-{
-    cannot_open_create_file,
-    expected_file_n_find,
-    file_does_n_exist,
-
-    arg_expected_argument,
-    arg_non_ava_option,
-
-    c_array_dn_more,
-    c_more_less_symbol_EFNS,
-    c_no_config_file_select,
-    c_cant_select_multi_conf,
-    c_non_except_comment_sign_use
-};
+#define PRINT_LINE_COLUMN                                                      \
+    std::to_string(line) + std::string(":") + std::to_string(column)
 
 class tepic_error_massages
 {
@@ -76,32 +62,49 @@ class tepic_error_massages
     /* TNGC */
     /* ------------------------------------------------------------------- */
     /* Comment sign must be used first of line */
-    inline static std::string TNGC_UNEXEC_COMMENT_SIGN(const int line,
-                                                       const int column)
+    inline static std::string TNGC_UNEXEC_COMMENT(const int line,
+                                                  const int column)
     {
-        return "Use comment sign ('#') in first of line." +
-               std::to_string(line) + std::string(":") + std::to_string(column);
+        return "Use comment sign ('#') in first of line." + PRINT_LINE_COLUMN;
     }
 
-    inline static std::string TNGC_OPEN_SEC(const int line, const int column)
+    inline static std::string TNGC_UNEXCEPT_SEC_DEF_ACT(const int line,
+                                                        const int column)
     {
-        // START: This error massage should explain what happend in tngc:60
         return "Define a section after of before another section, Check (man "
                "tng.section)." +
-               std::to_string(line) + std::string(":") + std::to_string(column);
+               PRINT_LINE_COLUMN;
     }
 
-    inline static std::string TNGC_CLOSE_SECT(const int line, const int column)
+    inline static std::string TNGC_UNEXEC_EQUEL(const int line,
+                                                const int column)
     {
-        return "Close section defination after section got defined our there "
-               "is no section to define. " +
-               std::to_string(line) + std::string(":") + std::to_string(column);
-    }
+        return "Equal sign most used after after varibale defination. " +
+               PRINT_LINE_COLUMN;
+    };
+
+    inline static std::string TNGC_UNEXEC_QUOTE(const int line,
+                                                const int column)
+    {
+        return "Use \" charecter for define string line or multi-line."
+               "\nExample:\n"
+               "block_line_prefix = \" * \""
+               "\nSee full example in tng.conf file.\n" +
+               PRINT_LINE_COLUMN;
+    };
+
+    inline static std::string TNGC_UNCLOSE_ML_EQUEL(const int line,
+                                                    const int column)
+    {
+        return "You should close your multi-line string with \"\"\"." +
+               PRINT_LINE_COLUMN;
+    };
+
+    /* ------------------------------------------------------------------- */
 };
 
 struct tng_error
 {
-    error_type error_type_o;
     const std::string error_massage;
 };
 
