@@ -72,7 +72,7 @@ class tepic_error_massages
                                                         const int column)
     {
         return "Define a section after of before another section, Check (man "
-               "tng.section)." +
+               "tng.section). " +
                PRINT_LINE_COLUMN;
     }
 
@@ -89,7 +89,7 @@ class tepic_error_massages
         return "Use \" charecter for define string line or multi-line."
                "\nExample:\n"
                "block_line_prefix = \" * \""
-               "\nSee full example in tng.conf file.\n" +
+               "\nSee full example in tng.conf file. " +
                PRINT_LINE_COLUMN;
     };
 
@@ -97,6 +97,13 @@ class tepic_error_massages
                                                     const int column)
     {
         return "You should close your multi-line string with \"\"\"." +
+               PRINT_LINE_COLUMN;
+    };
+
+    inline static std::string VALID_USE_WRG_VAL_TYPE(const int line,
+                                                     const int column)
+    {
+        return "value type is not acceptable for variable. " +
                PRINT_LINE_COLUMN;
     };
 

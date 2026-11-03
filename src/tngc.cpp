@@ -7,12 +7,9 @@
 #include "tngc.hpp"
 #include <error.hpp>
 
-// no space in variable and field name strings
-// " cpp" [X] "cpp" [Y]
 auto read_set_tngc(ConfigData &config_data) -> void
 {
     std::ifstream config_stream(config_path);
-    // std::ifstream sdas(config_path, std::ios::binary);
     debug_prt("file %s got target as config file.\n", config_path.c_str());
 
     if (!config_stream)
@@ -115,12 +112,13 @@ auto read_set_tngc(ConfigData &config_data) -> void
             {
                 if (state == State::reading_value)
                 {
-                    if ((line.size() - column_count) == 3)
+                    if ((line.find("\"\"\"")))
                     {
                         if (line [column_count + 1] == '\"' &&
                             line [column_count + 2] == '\"' &&
                             line [column_count + 3] == '\n')
                         {
+                            std::printf("dadasd ");
                             state = State::reading_string_multi_line_value;
                         }
                     }
@@ -132,7 +130,7 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else if (state == State::reading_string_multi_line_value)
                 {
-                    if ((line.size() - column_count) == 2)
+                    if ((line.find("\"\"\"")))
                     {
                         if (line [column_count + 1] == '\"' &&
                             line [column_count + 2] == '\"' &&
@@ -198,7 +196,7 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else if (c == ',')
                 {
-                    std::printf("%s", field_string.c_str());
+                    // std::printf("%s", field_string.c_str());
                     if (!Search::if_element_exist(config_data.sections,
                                                   config_data.current_index))
                         config_data.sections.emplace_back();
@@ -265,7 +263,13 @@ auto read_set_tngc(ConfigData &config_data) -> void
 
                 valueStrMl_string.clear();
             }
+
+            // END: for loop
         }
+
+        column_count = 0;
+
+        // END: while loop
     }
 
     return;

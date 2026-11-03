@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "buffer.hpp"
+#include "error.hpp"
 #include "macro.h"
 #include "search.hpp"
 #include "section.hpp"
@@ -66,7 +67,11 @@ auto Config::fill_config_buffer(Section &section) -> void
             }
             else
             {
-                // TODO: throw error
+                throw tng_error{
+                    .error_massage =
+                        tepic_error_massages::VALID_USE_WRG_VAL_TYPE(
+                            variable_value.get_metadata(NO).line,
+                            variable_value.get_metadata(NO).column)};
             }
         }
         else if (variable == "comment_style")
