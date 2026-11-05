@@ -5,7 +5,6 @@
 
 enum class State
 {
-    none,
     line_start,
     reading_section_feild,
     reading_section_between_feild,

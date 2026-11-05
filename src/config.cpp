@@ -1,13 +1,9 @@
-#include "config.hpp"
-#include <algorithm>
-#include <cstddef>
 #include <filesystem>
-#include <fstream>
-#include <optional>
 #include <string>
 #include <vector>
 
 #include "buffer.hpp"
+#include "config.hpp"
 #include "error.hpp"
 #include "macro.h"
 #include "search.hpp"

@@ -1,8 +1,6 @@
 #ifndef INIT_H
 #define INIT_H
 
-#pragma once
-
 #include <cstdlib>
 #include <stdexcept>
 #include <string>

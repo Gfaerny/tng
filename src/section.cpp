@@ -61,7 +61,7 @@ auto Section::push_field(const std::string &field, const size_t line,
 {
     MetaData metadata{.line = line, .column = column};
     TokenValue tokenvalue{.text = field, .metadata = metadata};
-    this->fields.push_back(std::move(tokenvalue));
+    fields.push_back(tokenvalue);
 }
 
 auto Section::push_var_val(std::string variableOrvalue, bool is_variable,

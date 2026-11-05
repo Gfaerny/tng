@@ -1,11 +1,14 @@
+#include <cstddef>
 #include <cstdlib>
 #include <fstream>
+#include <iostream>
 
 #include "config.hpp"
 #include "macro.h"
 #include "search.hpp"
 #include "tngc.hpp"
 #include <error.hpp>
+#include <vector>
 
 auto read_set_tngc(ConfigData &config_data) -> void
 {
@@ -24,10 +27,17 @@ auto read_set_tngc(ConfigData &config_data) -> void
     State state = State::line_start;
 
     size_t column_count{0}, line_count{0};
+    int skip_col{0}, skip_line{0};
 
     while (std::getline(config_stream, line))
     {
         line_count++;
+
+        if (skip_line > 0)
+        {
+            skip_line--;
+            continue;
+        }
 
         // Add new line charecter to line string for auto declaration -> state
         line += '\n';
@@ -43,12 +53,16 @@ auto read_set_tngc(ConfigData &config_data) -> void
         {
             column_count++;
 
+            if (skip_col > 0)
+            {
+                skip_col--;
+                continue;
+            }
+
             // In this scope of if's statements we just set `State` of `state`
             if (c == '[')
             {
-                if (state == State::line_start || state == State::value_done ||
-                    state == State::value_string_done ||
-                    state == State::value_string_multi_line_done)
+                if (state == State::line_start)
                 {
                     state = State::reading_section_feild;
                 }
@@ -92,7 +106,7 @@ auto read_set_tngc(ConfigData &config_data) -> void
 
             else if (c == '=')
             {
-                if (state == State::reading_variable) // auto variable -> check
+                if (state == State::reading_variable)
                 {
                     config_data.push_variable_value(variable_string, YES,
                                                     line_count, column_count);
@@ -108,20 +122,33 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
             }
 
+            else if (c == '(')
+            {
+                if (state == State::reading_value)
+                {
+                    if (Search::if_element_exist(
+                            line, static_cast<int>(column_count)) &&
+                        line [column_count] == '\"')
+                    {
+                        state = State::reading_string_multi_line_value;
+                        skip_col++;
+                    }
+                    else
+                    {
+                        // TODO: throw error for incorrect usage of parenthese
+                        //  parenthese for define multi line string value;
+                    }
+                }
+                else
+                {
+                    // TODO: throw error
+                }
+            }
+
             else if (c == '\"')
             {
                 if (state == State::reading_value)
                 {
-                    if ((line.find("\"\"\"")))
-                    {
-                        if (line [column_count + 1] == '\"' &&
-                            line [column_count + 2] == '\"' &&
-                            line [column_count + 3] == '\n')
-                        {
-                            std::printf("dadasd ");
-                            state = State::reading_string_multi_line_value;
-                        }
-                    }
                     state = State::reading_string_value;
                 }
                 else if (state == State::reading_string_value)
@@ -130,15 +157,13 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else if (state == State::reading_string_multi_line_value)
                 {
-                    if ((line.find("\"\"\"")))
+                    if (Search::if_element_exist(
+                            line, static_cast<int>(column_count + 2)) &&
+                        line [column_count] == ')')
                     {
-                        if (line [column_count + 1] == '\"' &&
-                            line [column_count + 2] == '\"' &&
-                            line [column_count + 3] == '\n')
-                        {
-                            state = State::value_string_multi_line_done;
-                        }
+                        state = State::value_string_multi_line_done;
                     }
+
                     else
                     {
                         throw tng_error{
@@ -155,39 +180,7 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
             }
 
-            else if (c == '\n')
-            {
-                if (state == State::section_done)
-                {
-                    state = State::line_start;
-                }
-                else if (state == State::value_string_done ||
-                         state == State::value_string_multi_line_done ||
-                         state == State::reading_value)
-                {
-                    if (state == State::value_string_done)
-                    {
-                        config_data.push_variable_value(
-                            valueStr_string, NO, line_count, column_count);
-                        valueStr_string.clear();
-                    }
-                    else if (state == State::value_string_multi_line_done)
-                    {
-                        config_data.push_variable_value(
-                            valueStrMl_string, NO, line_count, column_count);
-                        valueStrMl_string.clear();
-                    }
-                    else if (state == State::reading_value)
-                    {
-                        config_data.push_variable_value(
-                            value_string, NO, line_count, column_count);
-                        value_string.clear();
-                    }
-                    state = State::line_start;
-                }
-            }
-
-            // Checking state and current charecter auto it -> for
+            // Checking state and current charecter
             if (state == State::reading_section_feild)
             {
                 if (c == '[')
@@ -196,10 +189,11 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else if (c == ',')
                 {
-                    // std::printf("%s", field_string.c_str());
                     if (!Search::if_element_exist(config_data.sections,
                                                   config_data.current_index))
+                    {
                         config_data.sections.emplace_back();
+                    }
 
                     config_data.sections [config_data.current_index].push_field(
                         field_string, line_count, column_count);
@@ -208,11 +202,11 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 }
                 else if (c == ']')
                 {
-                    std::printf("%s", field_string.c_str());
-
                     if (!Search::if_element_exist(config_data.sections,
                                                   config_data.current_index))
+                    {
                         config_data.sections.emplace_back();
+                    }
 
                     config_data.sections [config_data.current_index].push_field(
                         field_string, line_count, column_count);
@@ -258,10 +252,38 @@ auto read_set_tngc(ConfigData &config_data) -> void
 
             else if (state == State::value_string_done)
             {
+                config_data.push_variable_value(valueStr_string, NO, line_count,
+                                                column_count);
+
+                valueStr_string.clear();
+            }
+
+            else if (state == State::value_string_multi_line_done)
+            {
                 config_data.push_variable_value(valueStrMl_string, NO,
                                                 line_count, column_count);
 
                 valueStrMl_string.clear();
+            }
+
+            // Check state and push string value.
+            else if (c == '\n')
+            {
+                if (state == State::section_done ||
+                    state == State::value_done ||
+                    state == State::value_string_done ||
+                    state == State::value_string_multi_line_done)
+                {
+                    state = State::line_start;
+                }
+                else if (state == State::reading_value)
+                {
+                    config_data.push_variable_value(value_string, NO,
+                                                    line_count, column_count);
+                    value_string.clear();
+
+                    state = State::line_start;
+                }
             }
 
             // END: for loop

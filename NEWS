@@ -1,0 +1,9 @@
+tng NEWS -- History of user-visible changes
+----------------------------------------------------
+
+Development for the initial release is currently ongoing.
+
+Current git version
+-------------------
+  * basic file creating
+  * config logic combined with filenames or file extension
