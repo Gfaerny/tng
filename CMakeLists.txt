@@ -33,6 +33,5 @@ target_compile_options(tng PRIVATE
   -Wall
   -Wunused-but-set-parameter
   -Wextra
-  -O2
   -std=c++20
 )

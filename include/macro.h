@@ -1,7 +1,6 @@
 #ifndef MACRO_H
 #define MACRO_H
 
-#include <cstdio>
 #include <filesystem>
 
 constexpr bool YES = true;
