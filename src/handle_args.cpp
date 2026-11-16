@@ -1,6 +1,7 @@
-#include <cstddef>
+#include <cstdio>
 #include <filesystem>
 #include <pwd.h>
+#include <string_view>
 #include <unistd.h>
 #include <vector>
 
@@ -8,168 +9,79 @@
 #include "error.hpp"
 #include "handle_args.hpp"
 #include "macro.h"
-#include "search.hpp"
-#include "tng_make_file.hpp"
+#include "path.hpp"
 
-static auto expand_tilde(const fs::path &input_path) -> fs::path
+auto HandleArgs::read_args() -> void
 {
-    std::string path_str = input_path.string();
-
-    if (path_str.empty() || path_str [0] != '~')
-        return input_path;
-
-    if (path_str.size() == 1 || path_str [1] == '/')
+    bool wc{NO};
+    for (auto arg : args_)
     {
-        const char *home_env = std::getenv("HOME");
-        fs::path home_dir;
-
-        if (home_env != nullptr && home_env [0] != '\0')
-        {
-            home_dir = home_env;
-        }
-        else
-        {
-            /* Fallback to passwd database.  */
-            struct passwd *pw = getpwuid(getuid());
-            if (pw != nullptr && pw->pw_dir != nullptr)
-                home_dir = pw->pw_dir;
-            else
-                return input_path; /* Cannot resolve home directory.  */
-        }
-
-        if (path_str.size() == 1)
-            return home_dir;
-
-        return home_dir / path_str.substr(2);
-    }
-
-    /* Handling ~otheruser/path expansion if required.  */
-    std::size_t slash_pos = path_str.find('/');
-    std::string username = (slash_pos == std::string::npos)
-                               ? path_str.substr(1)
-                               : path_str.substr(1, slash_pos - 1);
-
-    struct passwd *pw = getpwnam(username.c_str());
-    if (pw == nullptr || pw->pw_dir == nullptr)
-        return input_path;
-
-    fs::path result = pw->pw_dir;
-    if (slash_pos != std::string::npos)
-        result /= path_str.substr(slash_pos + 1);
-
-    return result;
-}
-
-auto resolve_to_absolute(const fs::path &raw_path) -> fs::path
-{
-    fs::path expanded = expand_tilde(raw_path);
-    std::error_code ec;
-    fs::path canonical_path = fs::weakly_canonical(expanded, ec);
-
-    if (ec)
-    {
-        if (expanded.is_relative())
-            expanded = fs::current_path() / expanded;
-        return expanded.lexically_normal();
-    }
-
-    return canonical_path;
-}
-
-auto handle_file(std::vector<fs::path> file_explanations)
-    -> std::vector<fs::path>
-{
-    std::vector<fs::path> return_vector{};
-    for (fs::path file_explanation : file_explanations)
-    {
-        fs::path resloved = resolve_to_absolute(file_explanation);
-        return_vector.push_back(resloved);
-    }
-    return return_vector;
-}
-
-auto handle_args(std::vector<std::string> &tng_args_vec) -> void
-{
-    std::vector<fs::path> files_path{};
-    size_t iit = 0;
-    bool config_called{NO};
-
-    // Remove tng first argument element "./TNG_DIRECTORY/tng" or "tng"
-    tng_args_vec.erase(tng_args_vec.begin());
-
-    for (auto arg : tng_args_vec)
-    {
-        ++iit;
-
-        // Help
         if (arg == "-h" || arg == "--help")
         {
-            std::printf(
-                "tng Usage : tng -[OPTIONS] [FILENAME]"
-                "\n\n\n"
-                "-c [FILEPATH], --config [FILEPATH] :   locate config file path"
-                "\n\n"
-                "-h. --help    :   print help");
+            print_help();
             return;
         }
 
-        // Config
-        else if (arg == "-c" || arg == "--config")
+        if (wc)
         {
-            // Is next argument exist?
-            if (!Search::if_element_exist(tng_args_vec, iit))
+            if (valid(arg))
             {
-                throw tng_error{.error_massage =
-                                    tepic_error_massages::C_FIND_FILE(
-                                        tng_args_vec [iit].c_str())};
+                conf_path = arg;
+                debug_prt("config file that consider: %s",
+                          std::string(arg).c_str());
             }
-            else if (config_called == YES)
-            {
+            else
+                throw tng_error{.error_massage =
+                                    tepic_error_massages::C_FILE_N_EXIST(arg)};
+
+            wc = NO;
+        }
+
+        else if (arg == "-c" || "--config")
+        {
+            if (wc == YES)
                 throw tng_error{
                     .error_massage =
                         tepic_error_massages::ARG_USE_MORE_THEN_ONCE()};
-            }
-            // TODO: need to change way of validate next argument in vector
-            // stack
-            else
-            {
-                config_called = YES;
-                // Set config_path global variable to new
-                config_path = resolve_to_absolute(tng_args_vec [iit]);
 
-                // TODO: maybe we need consider -v or --versobse flag first in
-                // `if` not `else if`
-                debug_prt("config file that consider: %s",
-                          tng_args_vec [iit].c_str());
-            }
+            wc = YES;
+            continue;
         }
 
-        // Verbose
         else if (arg == "-v" || arg == "--verbose")
-        {
             verbose = YES;
-        }
-
-        // Check for non-aviable options in argument vector
-        else if ((arg.size() == 2 && arg [0] == '-') ||
-                 (arg.size() >= 2 && arg [0] == '-' && arg [1] == '-'))
-        {
-            throw tng_error{.error_massage =
-                                tepic_error_massages::ARG_NON_AVA_OPT(arg)};
-        }
 
         else
         {
-            files_path.push_back(tng_args_vec [iit - 1]);
+            auto path = reslove_to_valid(arg);
+
+            if (valid(path))
+                throw tng_error{.error_massage = "Path is't exist"};
+
+            files.push_back(path);
         }
     }
+}
 
-    // TODO: check if empty  work for this situation or try .size() == 0
-    if (files_path.empty())
-    {
-        throw tng_error{.error_massage =
-                            tepic_error_massages::ARG_EXPECT_MORE()};
-    }
+[[nodiscard]] auto HandleArgs::valid(fs::path path) -> bool
+{
+    if (!fs::exists(path.parent_path()))
+        return NO;
 
-    tng_write_file(handle_file(files_path));
+    return YES;
+}
+
+auto HandleArgs::print_help() -> void
+{
+    char help_inf [] =
+        ""
+        "tng usage : tng -[OPTIONS] [FILENAME]"
+        "\n\n\n"
+        "-c [FILEPATH], --config [FILEPATH] :   locate config file path"
+        "\n\n"
+        "-h,            --help              :   print help"
+        ""
+        "";
+
+    std::printf("%s", help_inf);
 }

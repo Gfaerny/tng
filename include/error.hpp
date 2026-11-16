@@ -1,7 +1,9 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include <format>
 #include <string>
+#include <string_view>
 
 #define PRINT_LINE_COLUMN                                                      \
     std::to_string(line) + std::string(":") + std::to_string(column)
@@ -26,9 +28,10 @@ class tepic_error_massages
     }
 
     /* Argument option does not support yet */
-    inline static auto ARG_NON_AVA_OPT(const std::string &option) -> std::string
+    inline static auto ARG_NON_AVA_OPT(const std::string_view &option)
+        -> std::string
     {
-        return option +
+        return std::string(option) +
                " Does't supported yet.See -h or --help to see all flag options";
     }
 
@@ -37,7 +40,7 @@ class tepic_error_massages
     /* Config */
     /* ------------------------------------------------------------------- */
     /* Config file not exist */
-    inline static std::string C_FILE_N_EXIST(const std::string &arg)
+    inline static std::string C_FILE_N_EXIST(const std::string_view &arg)
     {
         return "Your config file (" + arg + ") does not find.";
     }
@@ -106,6 +109,16 @@ class tepic_error_massages
         return "value type is not acceptable for variable. " +
                PRINT_LINE_COLUMN;
     };
+
+    inline static std::string glo_not_valid_path(std::string path)
+    {
+        return path + ": this path is not reslove able.";
+    }
+
+    inline static std::string cant_find_home_dir()
+    {
+        return "Can not find home directory. Check permisson";
+    }
 
     /* ------------------------------------------------------------------- */
 };

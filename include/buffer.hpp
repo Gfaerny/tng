@@ -18,15 +18,15 @@ struct SectionBuffer
     std::vector<std::string_view> header_texts{};
     std::vector<std::string_view> footer_texts{};
 
-    std::optional<bool> comment = std::nullopt;
-    std::optional<bool> comment_style;
-    std::optional<bool> include_license;
+    bool comment = NO;
+    bool comment_style;
+    bool include_license;
 
     std::string_view line_prefix{""};
     std::string_view block_header{""};
     std::string_view block_line_prefix{""};
     std::string_view block_footer{""};
-    std::string license_path{""};
+    std::string_view license_path{""};
 
     // preconfiged
     bool overwrite_existing_file{NO};

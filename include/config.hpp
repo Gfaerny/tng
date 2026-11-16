@@ -34,13 +34,14 @@ struct ConfigData
 class Config
 {
   public:
-    ConfigData configData;
-    SectionBuffer configBuffer;
-
     Config();
 
-    auto fill_config_buffer(Section &section) -> void;
-    auto validation_config_buffer() -> void;
+    ConfigData conf_data;
+    SectionBuffer conf_buffer;
+
+  private:
+    auto fill_conf_buffer(Section &section) -> void;
+    auto validation_conf_buffer() -> void;
 };
 
 #endif

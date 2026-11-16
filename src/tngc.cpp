@@ -4,7 +4,6 @@
 #include "error.hpp"
 
 #include <cctype>
-#include <charconv>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -115,16 +114,6 @@ class lexer
         return src_ [pos_ + offset];
     }
 
-    [[nodiscard]] auto is_int(std::string_view str) const -> bool
-    {
-        for (char c : str)
-        {
-            if (!std::isdigit(static_cast<unsigned char>(c)))
-                return NO;
-        }
-        return YES;
-    }
-
     auto advance() -> void
     {
         if (pos_ < src_.size())
@@ -215,6 +204,15 @@ class lexer
                             std::to_string(tok_col)};
     }
 
+    auto scan_int(std::string_view str) const -> bool
+    {
+        for (char c : str)
+            if (!std::isdigit(static_cast<unsigned char>(c)))
+                return NO;
+
+        return YES;
+    }
+
     auto scan_identifier(std::size_t tok_line, std::size_t tok_col) -> token
     {
         const std::size_t start = pos_;
@@ -233,7 +231,7 @@ class lexer
             text == "true" || text == "false")
             return token{token_kind::tok_boolean, text, tok_line, tok_col};
 
-        else if (is_int(text))
+        else if (scan_int(text))
             return token{token_kind::tok_int, text, tok_line, tok_col};
 
         else

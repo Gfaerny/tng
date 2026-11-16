@@ -1,4 +1,3 @@
-##
 cmake_minimum_required(VERSION 3.15)
 project(tng VERSION 1.0.0
                         DESCRIPTION "CLI linux app for making customable programing porpuse file"

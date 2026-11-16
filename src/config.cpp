@@ -35,13 +35,13 @@ Config::Config()
     if (config_path == "NULL")
         config_path = Search::project_config_path();
 
-    read_set_tngc(configData);
+    read_set_tngc(conf_data);
 }
 
 /*
  * Fill ConfigSectoinBuffer with section data
  */
-auto Config::fill_config_buffer(Section &section) -> void
+auto Config::fill_conf_buffer(Section &section) -> void
 {
     // Switch between aviable variable
     // If it was neccesry we add to configBuffer
