@@ -30,12 +30,16 @@ auto ConfigData::push_field(const std::string &field, const size_t &line,
     this->sections.at(this->current_index).push_field(field, line, column);
 }
 
-Config::Config()
+Config::Config(fs::path conf_path)
 {
-    if (config_path == "NULL")
-        config_path = Search::project_config_path();
+    // TODO: No need to findout about configpath validation status
+    if (conf_path == "NULL")
+        conf_path = Search::project_config_path();
 
+    // TODO: Better way to locate read_set_tngc function is inside of Config
+    // class
     read_set_tngc(conf_data);
+    valid_cnf_data();
 }
 
 /*
@@ -169,7 +173,7 @@ auto Config::fill_conf_buffer(Section &section) -> void
     }
 }
 
-auto Config::validation_config_buffer() -> void
+auto Config::valid_cnf_data() -> void
 {
     // Dependecy validation
     // We have 3 mother variable that if it wasn't get set other variable(Some
@@ -178,49 +182,55 @@ auto Config::validation_config_buffer() -> void
     // line_*, comment_style] varaibles"
     // 2. include_license -> this variable need this mother variable
     // "license_path, include_license_before_header"
-    if (configBuffer.comment == YES)
+    for (auto buffer : conf_data.sections)
     {
-        if (configBuffer.comment_style == YES)
+        for (auto var_val : buffer.variable_value)
         {
-            if (configBuffer.block_header == "")
+            if (var_val.variable.get_value() == "comment")
             {
-                // TODO: throw error. write all block element
+                if (configBuffer.comment_style == YES)
+                {
+                    if (configBuffer.block_header == "")
+                    {
+                        // TODO: throw error. write all block element
+                    }
+                    if (configBuffer.block_footer == "")
+                    {
+                        // TODO: throw error. write all block element
+                    }
+                    if (configBuffer.block_line_prefix == "")
+                    {
+                        // TODO: throw error. write all block element
+                    }
+                }
+                if (configBuffer.comment_style == NO)
+                {
+                    if (configBuffer.line_prefix == "")
+                    {
+                        // TODO: throw error. write line prefix if you want to
+                        // write your text in comment
+                    }
+                }
             }
-            if (configBuffer.block_footer == "")
+            else if (configBuffer.comment == NO)
             {
-                // TODO: throw error. write all block element
+                if (configBuffer.comment_style == YES)
+                {
+                    // TODO: warn not gonna get use
+                }
             }
-            if (configBuffer.block_line_prefix == "")
-            {
-                // TODO: throw error. write all block element
-            }
-        }
-        if (configBuffer.comment_style == NO)
-        {
-            if (configBuffer.line_prefix == "")
-            {
-                // TODO: throw error. write line prefix if you want to write
-                // your text in comment
-            }
-        }
-    }
-    else if (configBuffer.comment == NO)
-    {
-        if (configBuffer.comment_style == YES)
-        {
-            // TODO: warn not gonna get use
-        }
-    }
 
-    else if (configBuffer.include_license == NO)
-    {
-        if (!configBuffer.license_path.empty())
-        {
-            // TODO: warn not gonna get use
-        }
-        if (configBuffer.include_license_before_header)
-        {
-            // TODO: warn not gonna get use
+            else if (configBuffer.include_license == NO)
+            {
+                if (!configBuffer.license_path.empty())
+                {
+                    // TODO: warn not gonna get use
+                }
+                if (configBuffer.include_license_before_header)
+                {
+                    // TODO: warn not gonna get use
+                }
+            }
         }
     }
 }
