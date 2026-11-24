@@ -124,9 +124,8 @@ class lexer
                 col_ = 1;
             }
             else
-            {
                 col_++;
-            }
+
             pos_++;
         }
     }
@@ -137,19 +136,15 @@ class lexer
         {
             const char c = current();
             if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
-            {
                 advance();
-            }
+
             else if (c == '#')
-            {
                 /* Ignore comment line until newline.  */
                 while (pos_ < src_.size() && current() != '\n')
                     advance();
-            }
+
             else
-            {
                 break;
-            }
         }
     }
 
@@ -239,9 +234,9 @@ class lexer
     }
 };
 
-auto read_set_tngc(ConfigData &config_data) -> void
+auto read_set_tngc(ConfigData &cnf_data, const fs::path cnf_path) -> void
 {
-    std::ifstream config_stream(config_path, std::ios::binary);
+    std::ifstream config_stream(cnf_path, std::ios::binary);
     if (!config_stream)
         throw tng_error{.error_massage =
                             "tng error : config file can not be open."};
@@ -258,23 +253,21 @@ auto read_set_tngc(ConfigData &config_data) -> void
         /* 1. Parse Section Header: [ field1, field2, ... ] */
         if (tok.kind == token_kind::tok_section_open)
         {
-            config_data.sections.emplace_back();
-            const std::size_t cur_sec = config_data.sections.size() - 1;
+            cnf_data.sections.emplace_back();
+            const std::size_t cur_sec = cnf_data.sections.size() - 1;
 
             tok = lex.next_token();
             while (tok.kind != token_kind::tok_section_close)
             {
                 if (tok.kind == token_kind::tok_identifier)
-                {
-                    config_data.sections [cur_sec].push_field(
+                    cnf_data.sections [cur_sec].push_field(
                         std::string(tok.text), tok.line, tok.column);
-                }
+
                 else if (tok.kind != token_kind::tok_comma)
-                {
                     throw tng_error{.error_massage =
                                         "tng error: expected field name in "
                                         "section definition."};
-                }
+
                 tok = lex.next_token();
             }
             tok = lex.next_token(); /* Skip ']' */
@@ -296,23 +289,19 @@ auto read_set_tngc(ConfigData &config_data) -> void
                 tok.kind != token_kind::tok_identifier &&
                 tok.kind != token_kind::tok_boolean &&
                 tok.kind != token_kind::tok_int)
-            {
                 throw tng_error{.error_massage =
                                     "tng error: expected valid value for key."};
-            }
 
             /* Push variable and value according to ConfigData's API */
-            config_data.push_variable_value(key, YES, k_line, k_col);
-            config_data.push_variable_value(std::string(tok.text), NO, tok.line,
-                                            tok.column);
+            cnf_data.push_variable_value(key, YES, k_line, k_col);
+            cnf_data.push_variable_value(std::string(tok.text), NO, tok.line,
+                                         tok.column);
 
             tok = lex.next_token();
         }
         else
-        {
             throw tng_error{.error_massage = "tng error: unexpected token at " +
                                              std::to_string(tok.line) + ":" +
                                              std::to_string(tok.column)};
-        }
     }
 }

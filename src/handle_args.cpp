@@ -13,6 +13,8 @@
 
 auto HandleArgs::read_args() -> void
 {
+    // TODO: I'm not sure about this function the way that we parse the config
+    // path with bool and continue is really sus
     bool wc{NO};
     for (auto arg : args_)
     {
@@ -51,6 +53,9 @@ auto HandleArgs::read_args() -> void
         else if (arg == "-v" || arg == "--verbose")
             verbose = YES;
 
+        else if (arg == "-n" || arg == "--no-conf")
+            use_conf = NO;
+
         else
         {
             auto path = reslove_to_valid(arg);
@@ -63,6 +68,7 @@ auto HandleArgs::read_args() -> void
     }
 }
 
+// TODO: valid method must be declare in path.[cpp , hpp]
 [[nodiscard]] auto HandleArgs::valid(fs::path path) -> bool
 {
     if (!fs::exists(path.parent_path()))

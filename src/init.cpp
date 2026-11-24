@@ -1,8 +1,8 @@
 #include <string_view>
 
 #include "error.hpp"
-#include "handle_args.hpp"
 #include "init.hpp"
+#include <tng.hpp>
 
 auto init(int arg, char *argv []) -> void
 {
@@ -15,10 +15,10 @@ auto init(int arg, char *argv []) -> void
 
     try
     {
-        HandleArgs
+        Tng tng(tng_args_vec);
     }
 
-    catch (tng_error &e)
+    catch (const tng_error &e)
     {
         std::printf("tng error : %s", e.error_massage.c_str());
         return;

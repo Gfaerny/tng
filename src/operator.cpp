@@ -9,6 +9,10 @@
 #include "macro.h"
 #include "operator.hpp"
 
+WriteOperator::WriteOperator(Config &cnf)
+{
+}
+
 auto WriteOperator::import_text(const std::string &text) -> void
 {
     std::vector<std::string> lines_header_text{};

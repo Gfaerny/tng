@@ -16,13 +16,12 @@ class HandleArgs
 
   private:
     auto read_args() -> void;
-
-    // Check the parent_path from exists */
-    auto valid(fs::path path) -> bool;
-
+    [[nodiscard]] auto valid(fs::path path) -> bool;
     auto print_help() -> void;
-
     std::vector<std::string_view> args_;
+
+  protected:
+    bool use_conf{YES};
     std::vector<fs::path> files;
     fs::path conf_path{};
 };
