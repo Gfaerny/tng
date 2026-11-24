@@ -15,7 +15,7 @@
 using secbuf_sec_bool_t = std::variant<SectionBuffer, Section, bool>;
 
 /*
- * Creat normal file using name_string auto list -> vector
+ * Create normal file using name_string auto list -> vector
  * porpuse of fucntion create empty file and may used by other write_file*
  * functoin's
  */
